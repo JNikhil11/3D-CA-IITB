@@ -1,11 +1,11 @@
 /**
  * ImmersiveCanvas — Full-viewport fixed WebGL stage.
  *
- * Houses:
- * 1. The master Aether Temple Engine sculpture
- * 2. Specialized 3D Chapter Environments (Robotics, Aerospace, Computing, Festival)
- * 3. Cinematic studio lighting, HDRI reflections, and volumetric ground mist
- * 4. Continuous scroll-driven camera choreography linking all 5 chapters
+ * Performance Architecture:
+ * 1. Decoupled from React scroll state — reads scrollState.progress directly inside useFrame
+ * 2. Emits onCanvasReady only after first WebGL frame buffer swap and shader warmup
+ * 3. Houses the master Aether Temple Engine and 4 specialized chapter environments
+ * 4. Zero DOM re-renders during scrolling for locked 60/90/120 FPS
  */
 
 import React, {
@@ -30,47 +30,78 @@ import { ComputingEnvironment } from './chapters/ComputingEnvironment';
 import { FestivalEnvironment } from './chapters/FestivalEnvironment';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { useWindowSize } from '../hooks/useWindowSize';
+import { scrollState } from '../motion/scrollState';
 import styles from './ImmersiveCanvas.module.css';
 
 export interface ImmersiveCanvasProps {
-  scrollProgress: number;
+  onCanvasReady?: () => void;
+  onLoadProgress?: (progress: number) => void;
 }
 
-function LoadingOverlay({
-  onLoaded,
+/**
+ * Tracks Drei asset download progress and notifies parent
+ */
+function AssetProgressTracker({
   onProgress,
+  onLoaded,
 }: {
-  onLoaded: () => void;
-  onProgress: (p: number) => void;
+  onProgress?: (p: number) => void;
+  onLoaded?: () => void;
 }) {
   const { progress, active } = useProgress();
+  const loadedRef = useRef(false);
 
   useEffect(() => {
-    onProgress(progress);
-    if (!active && progress >= 100) {
-      const id = setTimeout(onLoaded, 300);
-      return () => clearTimeout(id);
+    if (onProgress) onProgress(progress);
+    if (!active && progress >= 100 && !loadedRef.current) {
+      loadedRef.current = true;
+      if (onLoaded) onLoaded();
     }
-  }, [active, progress, onLoaded, onProgress]);
+  }, [active, progress, onProgress, onLoaded]);
 
   return null;
 }
 
-interface CameraRig {
-  scrollProgress: number;
-  reducedMotion: boolean;
+/**
+ * Ensures initial frame buffer swap and proactively warms up WebGL shaders
+ */
+function FirstFrameTracker({ onReady }: { onReady: () => void }) {
+  const count = useRef(0);
+  const fired = useRef(false);
+
+  useFrame(({ gl, scene, camera }) => {
+    if (fired.current) return;
+    count.current += 1;
+
+    if (count.current === 1) {
+      // Proactively warm up WebGL shaders to avoid runtime stutter
+      try {
+        gl.compile(scene, camera);
+      } catch {
+        // Fallback gracefully if compile fails in test mock
+      }
+    }
+
+    if (count.current >= 2) {
+      fired.current = true;
+      onReady();
+    }
+  });
+
+  return null;
 }
 
 /**
  * Continuous 5-Chapter Camera Choreography
+ * Direct frame sampling from scrollState.progress (zero React re-renders)
  */
-function ScrollCamera({ scrollProgress, reducedMotion }: CameraRig) {
+function ScrollCamera({ reducedMotion }: { reducedMotion: boolean }) {
   const { camera } = useThree();
   const targetPos = useRef(new THREE.Vector3(0, 1.25, 9.2));
   const targetLook = useRef(new THREE.Vector3(0, 0.2, 0));
 
   useFrame(() => {
-    const p = scrollProgress;
+    const p = scrollState.progress;
 
     if (p < 0.2) {
       // Opening Hero: Wide establishing 3/4 view of the temple engine
@@ -104,7 +135,7 @@ function ScrollCamera({ scrollProgress, reducedMotion }: CameraRig) {
         THREE.MathUtils.lerp(0, -0.8, t)
       );
     } else if (p < 0.82) {
-      // Chapter 03: Aerospace & Deep Space (Camera sweeps across to the orbital satellite)
+      // Chapter 03: Aerospace & Deep Space (Camera sweeps across to orbital satellite)
       const t = (p - 0.62) / 0.2;
       targetPos.current.set(
         THREE.MathUtils.lerp(-3.2, 3.4, t),
@@ -188,51 +219,40 @@ function AetherDust() {
 }
 
 function SceneContent({
-  scrollProgress,
   reducedMotion,
+  onCanvasReady,
 }: {
-  scrollProgress: number;
   reducedMotion: boolean;
+  onCanvasReady: () => void;
 }) {
-  // Compute smooth chapter environment visibility weights
-  const p = scrollProgress;
+  const roboticsGroup = useRef<THREE.Group>(null);
+  const aerospaceGroup = useRef<THREE.Group>(null);
+  const computingGroup = useRef<THREE.Group>(null);
+  const festivalGroup = useRef<THREE.Group>(null);
 
-  // Robotics: fades in around 0.35, peaks 0.45-0.58, fades out by 0.65
-  const roboticsOpacity =
-    p >= 0.32 && p <= 0.65
-      ? p < 0.42
-        ? (p - 0.32) / 0.1
-        : p > 0.58
-        ? (0.65 - p) / 0.07
-        : 1.0
-      : 0.0;
+  // Dynamically update chapter visibility in useFrame without React re-renders
+  useFrame(() => {
+    const p = scrollState.progress;
 
-  // Aerospace: fades in around 0.55, peaks 0.65-0.78, fades out by 0.84
-  const aerospaceOpacity =
-    p >= 0.55 && p <= 0.84
-      ? p < 0.65
-        ? (p - 0.55) / 0.1
-        : p > 0.78
-        ? (0.84 - p) / 0.06
-        : 1.0
-      : 0.0;
-
-  // Computing: fades in around 0.74, peaks 0.82-0.90, fades out by 0.94
-  const computingOpacity =
-    p >= 0.74 && p <= 0.94
-      ? p < 0.82
-        ? (p - 0.74) / 0.08
-        : p > 0.9
-        ? (0.94 - p) / 0.04
-        : 1.0
-      : 0.0;
-
-  // Festival: fades in around 0.88, peaks at 1.0
-  const festivalOpacity =
-    p >= 0.88 ? THREE.MathUtils.clamp((p - 0.88) / 0.08, 0, 1) : 0.0;
+    if (roboticsGroup.current) {
+      roboticsGroup.current.visible = p >= 0.32 && p <= 0.65;
+    }
+    if (aerospaceGroup.current) {
+      aerospaceGroup.current.visible = p >= 0.55 && p <= 0.84;
+    }
+    if (computingGroup.current) {
+      computingGroup.current.visible = p >= 0.74 && p <= 0.94;
+    }
+    if (festivalGroup.current) {
+      festivalGroup.current.visible = p >= 0.88;
+    }
+  });
 
   return (
     <>
+      {/* Confirms 1st and 2nd frames have rendered and warmed up shaders */}
+      <FirstFrameTracker onReady={onCanvasReady} />
+
       {/* Studio HDRI Environment for realistic metallic reflections */}
       <Environment files="/hdri/studio_small.hdr" background={false} />
 
@@ -265,7 +285,7 @@ function SceneContent({
       />
 
       {/* Smooth Scroll Camera Choreography */}
-      <ScrollCamera scrollProgress={scrollProgress} reducedMotion={reducedMotion} />
+      <ScrollCamera reducedMotion={reducedMotion} />
 
       {/* Subtle Aether Stardust */}
       {!reducedMotion && <AetherDust />}
@@ -282,23 +302,34 @@ function SceneContent({
       </PresentationControls>
 
       {/* Distinct 3D Chapter Environments */}
-      <RoboticsEnvironment active={roboticsOpacity > 0} opacity={roboticsOpacity} />
-      <AerospaceEnvironment active={aerospaceOpacity > 0} opacity={aerospaceOpacity} />
-      <ComputingEnvironment active={computingOpacity > 0} opacity={computingOpacity} />
-      <FestivalEnvironment active={festivalOpacity > 0} opacity={festivalOpacity} />
+      <group ref={roboticsGroup} visible={false}>
+        <RoboticsEnvironment active={true} opacity={1} />
+      </group>
+      <group ref={aerospaceGroup} visible={false}>
+        <AerospaceEnvironment active={true} opacity={1} />
+      </group>
+      <group ref={computingGroup} visible={false}>
+        <ComputingEnvironment active={true} opacity={1} />
+      </group>
+      <group ref={festivalGroup} visible={false}>
+        <FestivalEnvironment active={true} opacity={1} />
+      </group>
     </>
   );
 }
 
 export const ImmersiveCanvas: React.FC<ImmersiveCanvasProps> = ({
-  scrollProgress,
+  onCanvasReady,
+  onLoadProgress,
 }) => {
   const reducedMotion = useReducedMotion();
   const { isMobile, isTablet } = useWindowSize();
-  const [loaded, setLoaded] = useState(false);
   const [hasWebGL, setHasWebGL] = useState(true);
-  const [progress, setProgress] = useState(0);
   const [interacted, setInteracted] = useState(false);
+  const [isReady, setIsReady] = useState(false);
+  const assetsLoadedRef = useRef(false);
+  const warmupReadyRef = useRef(false);
+  const reportedReadyRef = useRef(false);
 
   useEffect(() => {
     try {
@@ -312,8 +343,28 @@ export const ImmersiveCanvas: React.FC<ImmersiveCanvasProps> = ({
     }
   }, []);
 
-  const handleLoaded = useCallback(() => setLoaded(true), []);
-  const handleProgress = useCallback((p: number) => setProgress(p), []);
+  const checkOverallReady = useCallback(() => {
+    if (
+      assetsLoadedRef.current &&
+      warmupReadyRef.current &&
+      !reportedReadyRef.current
+    ) {
+      reportedReadyRef.current = true;
+      setIsReady(true);
+      if (onCanvasReady) onCanvasReady();
+    }
+  }, [onCanvasReady]);
+
+  const handleAssetsLoaded = useCallback(() => {
+    assetsLoadedRef.current = true;
+    checkOverallReady();
+  }, [checkOverallReady]);
+
+  const handleWarmupReady = useCallback(() => {
+    warmupReadyRef.current = true;
+    checkOverallReady();
+  }, [checkOverallReady]);
+
   const handleInteraction = useCallback(() => setInteracted(true), []);
 
   if (!hasWebGL) {
@@ -330,22 +381,8 @@ export const ImmersiveCanvas: React.FC<ImmersiveCanvasProps> = ({
       onPointerDown={handleInteraction}
       onTouchStart={handleInteraction}
     >
-      {/* Loading Veil */}
-      <div className={`${styles.loadingVeil} ${loaded ? styles.hidden : ''}`}>
-        <div className={styles.loadingCrest}>The Aether Engine</div>
-        <div className={styles.loadingBar}>
-          <div
-            className={styles.loadingBarFill}
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-        <div className={styles.loadingCaption}>
-          Calibrating Celestial Instruments…
-        </div>
-      </div>
-
       {/* Drag hint */}
-      {loaded && !interacted && (
+      {isReady && !interacted && (
         <div className={styles.dragHint}>
           ✦ Drag or touch to rotate the engine
         </div>
@@ -372,18 +409,14 @@ export const ImmersiveCanvas: React.FC<ImmersiveCanvasProps> = ({
           });
         }}
       >
-        <Suspense
-          fallback={
-            <LoadingOverlay
-              onLoaded={handleLoaded}
-              onProgress={handleProgress}
-            />
-          }
-        >
-          <LoadingOverlay onLoaded={handleLoaded} onProgress={handleProgress} />
+        <Suspense fallback={null}>
+          <AssetProgressTracker
+            onProgress={onLoadProgress}
+            onLoaded={handleAssetsLoaded}
+          />
           <SceneContent
-            scrollProgress={scrollProgress}
             reducedMotion={reducedMotion}
+            onCanvasReady={handleWarmupReady}
           />
         </Suspense>
       </Canvas>

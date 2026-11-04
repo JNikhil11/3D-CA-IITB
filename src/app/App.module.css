@@ -1,37 +1,73 @@
 /* ============================================================
    APP ROOT — Full Immersive Experience Architecture
    The 3D canvas is fixed at z:0, editorial chapters scroll
-   over it with glassmorphic overlay panels.
+   over it with translucent Renaissance vellum overlay panels.
    ============================================================ */
 
 .appRoot {
   position: relative;
-  background: transparent;
-  color: var(--color-ink);
+  background-color: #03050A;
+  color: var(--color-ink-deep);
+  min-height: 100vh;
+}
+
+/* Accessible skip link */
+.skipLink {
+  position: absolute;
+  top: -9999px;
+  left: 1rem;
+  z-index: 10000;
+  padding: 0.75rem 1.25rem;
+  background: var(--color-antique-gold);
+  color: #141824;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.85rem;
+  border-radius: 2px;
+  text-decoration: none;
+  transition: top var(--transition-fast);
+}
+
+.skipLink:focus {
+  top: 1rem;
 }
 
 /* ============================================================
    EDITORIAL SCROLL STREAM — All chapter content
    Scrolls over the fixed 3D canvas.
+   Staggered reveal after curtain dismissal.
    ============================================================ */
 
 .scrollStream {
   position: relative;
   z-index: 10;
   pointer-events: none; /* Canvas gets pointer events by default */
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Re-enable pointer events on interactive children */
-.scrollStream * {
-  pointer-events: auto;
+.scrollStreamRevealed {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-/* Each chapter panel is a full-viewport-height section */
+/* Re-enable pointer events ONLY on interactive cards and buttons, NOT full-screen panels */
 .chapterPanel {
   min-height: 100vh;
   display: flex;
   align-items: center;
   padding: 0 var(--gutter-mobile);
+  pointer-events: none;
+}
+
+.glassCard {
+  pointer-events: auto;
+}
+
+.glassCard * {
+  pointer-events: auto;
 }
 
 @media (min-width: 640px) {
@@ -52,47 +88,62 @@
   min-height: 100vh;
 }
 
-/* Content card glass panel */
+/* ============================================================
+   TRANSLUCENT RENAISSANCE VELLUM CARDS
+   Warm vellum ~78-82% opacity reveals 3D atlas behind
+   High-contrast carbon ink text ensures crisp AAA readability
+   ============================================================ */
+
 .glassCard {
-  background: rgba(5, 7, 15, 0.72);
-  border: 1px solid rgba(217, 175, 86, 0.22);
+  background: var(--color-vellum-base);
+  border: 1px solid var(--color-deckle-border);
   border-radius: 2px;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  padding: clamp(1.5rem, 4vw, 3rem);
+  backdrop-filter: blur(16px) saturate(130%);
+  -webkit-backdrop-filter: blur(16px) saturate(130%);
+  padding: clamp(1.75rem, 4vw, 3rem);
   max-width: min(540px, 100%);
-  box-shadow:
-    0 24px 60px rgba(0, 0, 0, 0.5),
-    inset 0 0 40px rgba(217, 175, 86, 0.04);
+  box-shadow: var(--shadow-vellum);
+  color: var(--color-ink-deep);
+  position: relative;
 }
 
-/* On mobile: tighter, positioned at bottom so 3D fills top half of screen */
+/* Subtle deckled edge inner border accent */
+.glassCard::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(180, 142, 60, 0.18);
+  pointer-events: none;
+  border-radius: 1px;
+}
+
+/* Parchment card variant for climax chapter */
+.glassCard.parchmentCard {
+  background: rgba(244, 239, 230, 0.86);
+  border-color: rgba(180, 142, 60, 0.45);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5),
+    0 24px 64px rgba(3, 5, 10, 0.55);
+}
+
+/* On mobile: reposition at bottom so 3D sculpture fills top half of screen */
 @media (max-width: 639px) {
   .chapterPanel,
   .chapterPanel.heroPanel {
     align-items: flex-end;
-    padding-top: 40vh;
-    padding-bottom: 1.5rem;
+    padding-top: 36vh;
+    padding-bottom: 2rem;
   }
 
   .glassCard {
-    background: rgba(5, 7, 15, 0.75);
-    padding: 1.25rem;
+    background: var(--color-vellum-mobile);
+    padding: 1.4rem;
     max-width: 100%;
     margin-bottom: 1rem;
   }
 }
 
-/* Parchment variant for final section */
-.glassCard.parchmentCard {
-  background: rgba(242, 235, 221, 0.92);
-  border-color: rgba(39, 39, 33, 0.18);
-  color: var(--color-ink);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-}
-
-/* Position cards differently per chapter */
+/* Position cards with deliberate asymmetry per chapter */
 .chapterPanel.leftPanel .glassCard {
   margin-left: 0;
   margin-right: auto;
@@ -113,19 +164,19 @@
 }
 
 /* ============================================================
-   FOOTER TRANSITION — 3D canvas fades out before footer
+   FOOTER TRANSITION — 3D canvas fades out into deep void
    ============================================================ */
 
 .footerSpacer {
-  min-height: 100vh;
+  min-height: 80vh;
   display: flex;
   align-items: flex-end;
   padding: 0;
   background: linear-gradient(
     to bottom,
     transparent 0%,
-    rgba(5, 7, 15, 0.6) 40%,
-    #05070f 100%
+    rgba(3, 5, 10, 0.65) 45%,
+    #03050A 100%
   );
 }
 
@@ -135,7 +186,7 @@
 
 .scrollIndicator {
   position: fixed;
-  bottom: 1.5rem;
+  bottom: 1.75rem;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -144,44 +195,25 @@
   gap: 0.4rem;
   pointer-events: none;
   z-index: 15;
-  animation: scrollBounce 1.4s ease-in-out infinite;
+  animation: scrollBounce 1.6s ease-in-out infinite;
+  transition: opacity 0.5s ease;
 }
 
 @keyframes scrollBounce {
-  0%, 100% { opacity: 0.4; transform: translateX(-50%) translateY(0); }
-  50% { opacity: 0.9; transform: translateX(-50%) translateY(5px); }
+  0%, 100% { opacity: 0.45; transform: translateX(-50%) translateY(0); }
+  50% { opacity: 0.95; transform: translateX(-50%) translateY(6px); }
 }
 
 .scrollIndicatorLine {
   width: 1px;
   height: 2.5rem;
-  background: linear-gradient(to bottom, rgba(217, 175, 86, 0.6), transparent);
+  background: linear-gradient(to bottom, rgba(217, 175, 86, 0.8), transparent);
 }
 
 .scrollIndicatorDot {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #D9AF56;
-  opacity: 0.7;
-}
-
-/* Skip link (accessibility) */
-.skipLink {
-  position: absolute;
-  top: -100%;
-  left: 1rem;
-  z-index: 999;
-  padding: 0.5rem 1rem;
   background: var(--color-antique-gold);
-  color: #05070f;
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-decoration: none;
-  border-radius: 2px;
-  transition: top 0.2s;
-}
-
-.skipLink:focus {
-  top: 1rem;
+  box-shadow: 0 0 6px rgba(217, 175, 86, 0.8);
 }

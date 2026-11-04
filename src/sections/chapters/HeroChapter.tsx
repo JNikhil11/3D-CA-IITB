@@ -1,6 +1,7 @@
 /**
  * HeroChapter — Opening panel: The Aether Engine
- * Appears on the left side over the full 3D scene.
+ * Renders in a translucent Renaissance vellum card on the left side
+ * over the full-bleed 3D celestial temple engine.
  */
 import React from 'react';
 import { TECHFEST_CONFIG } from '../../content/techfest';
@@ -18,16 +19,14 @@ export const HeroChapter: React.FC<HeroChapterProps> = ({ onExploreClick }) => (
       {TECHFEST_CONFIG.edition} · Asia's Largest Science Festival
     </div>
 
-    <div className={ed.editionPill}>Aetherial Renaissance</div>
-
     <span className={ed.headlineSub}>The Living Atlas</span>
-    <h1 className={ed.headlineDark} style={{ marginBottom: '0.25rem' }}>
+    <h1 className={ed.headlineVellum} style={{ marginBottom: '0.25rem' }}>
       {TECHFEST_CONFIG.theme}
     </h1>
 
     <div className={ed.goldRule} />
 
-    <p className={ed.bodyDark}>{TECHFEST_CONFIG.narrativeLead}</p>
+    <p className={ed.bodyVellum}>{TECHFEST_CONFIG.narrativeLead}</p>
 
     <div className={ed.datesBadge}>
       ✦ {TECHFEST_CONFIG.dates}

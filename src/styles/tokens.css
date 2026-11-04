@@ -1,13 +1,22 @@
 :root {
-  /* Editorial Color Palette (Techfest 30 Living Atlas Spec Page 09) */
+  /* Editorial Color Palette (Techfest 30 Living Atlas Spec) */
   --color-parchment: #F2EBDD;
   --color-parchment-light: #FBF7EE;
   --color-parchment-deep: #E6DFCDE0;
   --color-ink: #272721;
   --color-ink-muted: #55554D;
   --color-ink-faint: #8E8E82;
-  --color-vermilion: #D65D40;
-  --color-vermilion-hover: #BF4F35;
+
+  /* Translucent Renaissance Vellum & Carbon Ink tokens */
+  --color-vellum-base: rgba(244, 239, 230, 0.78);
+  --color-vellum-mobile: rgba(246, 242, 234, 0.84);
+  --color-ink-deep: #1B1B16;
+  --color-ink-body: #2E2C24;
+  --color-deckle-border: rgba(180, 142, 60, 0.38);
+  --shadow-vellum: inset 0 0 0 1px rgba(255, 255, 255, 0.45), 0 16px 48px rgba(3, 5, 10, 0.45);
+
+  --color-vermilion: #BF4F35;
+  --color-vermilion-hover: #A83E26;
   --color-vermilion-subtle: #F6E2DC;
   --color-ultramarine: #344FC1;
   --color-ultramarine-dark: #1E2E7B;

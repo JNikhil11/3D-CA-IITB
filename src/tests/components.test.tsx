@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
+import { InitialRevealCurtain } from '../components/InitialRevealCurtain';
 import { HeroChapter } from '../sections/chapters/HeroChapter';
 import { WorldsChapter } from '../sections/chapters/WorldsChapter';
 import { FinaleChapter } from '../sections/chapters/FinaleChapter';
@@ -32,10 +33,10 @@ describe('Component & Accessibility Verification', () => {
     expect(screen.getByText(/techfest\.org/)).toBeInTheDocument();
   });
 
-  it('renders WorldsChapter with domain grid and competition list', () => {
+  it('renders WorldsChapter with archival exhibition layout and competition list', () => {
     render(<WorldsChapter />);
     expect(screen.getByText('World of Engineering')).toBeInTheDocument();
-    expect(screen.getByText(/Robotics/)).toBeInTheDocument();
+    expect(screen.getByText('Robotics & Autonomous Kinetic Systems')).toBeInTheDocument();
     expect(screen.getByText(/International Robowars/)).toBeInTheDocument();
     expect(screen.getByText('All Competitions ↗')).toBeInTheDocument();
   });
@@ -54,5 +55,13 @@ describe('Component & Accessibility Verification', () => {
       'href',
       'https://techfest.org'
     );
+  });
+
+  it('renders InitialRevealCurtain with brand title, astrolabe rings, and calibration status', () => {
+    render(<InitialRevealCurtain isReady={false} loadProgress={45} />);
+    expect(screen.getByText('The Living Atlas')).toBeInTheDocument();
+    expect(screen.getByText('Techfest 30 · IIT Bombay')).toBeInTheDocument();
+    expect(screen.getByRole('status', { name: /Calibrating Celestial Instruments/i })).toBeInTheDocument();
+    expect(screen.getByText('45%')).toBeInTheDocument();
   });
 });

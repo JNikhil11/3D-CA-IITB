@@ -1,6 +1,6 @@
 /**
  * FinaleChapter — Final Chapter: Enter Techfest
- * Centre-panel with parchment treatment and primary CTA.
+ * Centre-panel with warm parchment treatment and primary registration CTA.
  */
 import React from 'react';
 import { TECHFEST_CONFIG } from '../../content/techfest';
@@ -12,7 +12,7 @@ export const FinaleChapter: React.FC = () => (
       Final Chapter · The Portal Opens
     </div>
 
-    <span className={ed.headlineSub} style={{ color: 'var(--color-ink-muted)' }}>
+    <span className={ed.headlineSub} style={{ color: '#8C6F2D' }}>
       {TECHFEST_CONFIG.institution}
     </span>
     <h2 className={ed.headlineLight}>
@@ -21,12 +21,12 @@ export const FinaleChapter: React.FC = () => (
 
     <div
       className={ed.goldRule}
-      style={{ margin: '1.25rem auto', background: 'var(--color-ink)' }}
+      style={{ margin: '1.25rem auto', background: '#B48E3C' }}
     />
 
     <p className={ed.bodyLight}>
-      {TECHFEST_CONFIG.themeSubtitle}. Join 175,000 scholars, engineers, and
-      innovators at IIT Bombay for three extraordinary days of science,
+      {TECHFEST_CONFIG.themeSubtitle}. Join scholars, engineers, and
+      innovators from across the nation at IIT Bombay for three extraordinary days of science,
       competition, and wonder.
     </p>
 
@@ -46,7 +46,7 @@ export const FinaleChapter: React.FC = () => (
       </a>
     </div>
 
-    <div className={ed.btnRow} style={{ justifyContent: 'center' }}>
+    <div className={ed.btnRow} style={{ justifyContent: 'center', marginTop: '0.75rem' }}>
       <a
         href={TECHFEST_CONFIG.urls.collegeAmbassador}
         target="_blank"
@@ -60,9 +60,9 @@ export const FinaleChapter: React.FC = () => (
     <p
       style={{
         fontFamily: 'var(--font-mono)',
-        fontSize: '0.6rem',
+        fontSize: '0.62rem',
         letterSpacing: '0.12em',
-        color: 'var(--color-ink-faint)',
+        color: '#6B685C',
         marginTop: '1.75rem',
         lineHeight: 1.7,
       }}

@@ -218,7 +218,7 @@ export const FESTIVAL_ATMOSPHERE: AtmosphereItem[] = [
     id: 'campus',
     title: 'The Green Powai Campus',
     subtitle: '500+ Acres of Intellectual Immersion',
-    description: 'Surrounded by the Sanjay Gandhi National Park hills and Powai Lake, IIT Bombay transforms into a buzzing international confluence of 175,000+ enthusiastic participants.',
+    description: 'Surrounded by the Sanjay Gandhi National Park hills and Powai Lake, IIT Bombay transforms into a buzzing international confluence of curious students, leading scholars, and global technology enthusiasts.',
     highlight: 'December 16–18, 2026 | Indian Institute of Technology Bombay.',
   },
 ];

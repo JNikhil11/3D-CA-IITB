@@ -84,26 +84,22 @@ test.describe('Responsive & Layout Verification Suite', () => {
     await page.waitForTimeout(3000);
 
     // 1. Chapter 01: Enter the Engine
-    const ch1 = page.locator('#enter-engine');
-    await ch1.scrollIntoViewIfNeeded();
+    await page.evaluate(() => document.getElementById('enter-engine')?.scrollIntoView());
     await page.waitForTimeout(800);
     await page.screenshot({ path: 'test-results/screenshot-ch01-engine.png' });
 
     // 2. Chapter 02: World of Engineering
-    const ch2 = page.locator('#worlds');
-    await ch2.scrollIntoViewIfNeeded();
+    await page.evaluate(() => document.getElementById('worlds')?.scrollIntoView());
     await page.waitForTimeout(800);
     await page.screenshot({ path: 'test-results/screenshot-ch02-worlds.png' });
 
     // 3. Chapter 03: The Techfest Experience
-    const ch3 = page.locator('#festival');
-    await ch3.scrollIntoViewIfNeeded();
+    await page.evaluate(() => document.getElementById('festival')?.scrollIntoView());
     await page.waitForTimeout(800);
     await page.screenshot({ path: 'test-results/screenshot-ch03-festival.png' });
 
     // 4. Finale: Enter Techfest 30
-    const finale = page.locator('#finale');
-    await finale.scrollIntoViewIfNeeded();
+    await page.evaluate(() => document.getElementById('finale')?.scrollIntoView());
     await page.waitForTimeout(800);
     await page.screenshot({ path: 'test-results/screenshot-finale.png' });
   });

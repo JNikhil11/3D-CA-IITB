@@ -1,6 +1,11 @@
 /**
  * WorldsChapter — Chapter 02: The World of Engineering
- * Left-side panel as camera orbits to reveal engineering domains.
+ *
+ * Archival Exhibition Folio:
+ * - Asymmetric layout with monumental numerals (01, 02, 03, 04)
+ * - Four curated engineering domains with technical aspects
+ * - Verified flagship competitions (International Robowars, Aeromodelling, InnovateX, ICC)
+ * - Zero generic small boxes
  */
 import React from 'react';
 import { DOMAINS, COMPETITIONS, TECHFEST_CONFIG } from '../../content/techfest';
@@ -8,40 +13,51 @@ import ed from '../../styles/editorial.module.css';
 
 export const WorldsChapter: React.FC = () => (
   <div>
-    <div className={ed.chapterBadge}>Chapter 02</div>
+    <div className={ed.folioEyebrow}>Chapter 02 · The Four Quadrants</div>
 
-    <span className={ed.headlineSub}>The Four Quadrants</span>
-    <h2 className={ed.headlineDark}>
+    <span className={ed.headlineSub}>Exhibition Folio</span>
+    <h2 className={ed.headlineVellum}>
       World of Engineering
     </h2>
 
     <div className={ed.goldRule} />
 
-    <p className={ed.bodyDark}>
-      Four orbital rings of the engine represent four great domains of
-      scientific and engineering endeavour. Each world hosts its own
-      competitions, workshops, and exhibitions at Techfest 30.
+    <p className={ed.bodyVellum}>
+      Four calibrated orbital rings of the Aether Engine represent the four
+      primary quadrants of modern scientific and technological enquiry. Each domain
+      hosts dedicated international competitions, technical workshops, and research showcases at Techfest 30.
     </p>
 
-    <div className={ed.domainGrid}>
-      {DOMAINS.map((d) => (
-        <div key={d.id} className={ed.domainPill}>
-          <strong>{d.number} · {d.title.split(' & ')[0]}</strong>
-          {d.tagline}
+    {/* Archival Exhibition Folio Layout (Replaces generic small box pills) */}
+    <div className={ed.exhibitionFolio}>
+      {DOMAINS.map((domain) => (
+        <div key={domain.id} className={ed.exhibitionRow}>
+          <span className={ed.monumentalNumeral}>{domain.number}</span>
+          <div className={ed.exhibitionContent}>
+            <div className={ed.exhibitionTitle}>{domain.title}</div>
+            <div className={ed.exhibitionTagline}>{domain.tagline}</div>
+            <div className={ed.exhibitionAspects}>
+              {domain.keyAspects.map((aspect) => (
+                <span key={aspect} className={ed.aspectTag}>
+                  {aspect}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
       ))}
     </div>
 
-    <div className={ed.goldRule} />
+    <div className={ed.brassHairline} />
 
-    <p className={ed.bodyDark} style={{ marginBottom: '0.5rem' }}>
-      Flagship competitions:
+    <p className={ed.headlineSub} style={{ marginBottom: '0.4rem' }}>
+      Verified Flagship Arenas:
     </p>
     <ul className={ed.compList}>
       {COMPETITIONS.slice(0, 4).map((c) => (
         <li key={c.id}>
           <span>
-            <strong style={{ color: 'rgba(217,175,86,0.9)' }}>{c.name}</strong>
+            <strong className={ed.compName}>{c.name}</strong>
             {' — '}{c.summary.split('.')[0]}.
           </span>
         </li>
