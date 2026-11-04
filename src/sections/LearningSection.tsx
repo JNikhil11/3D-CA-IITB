@@ -5,7 +5,7 @@ import styles from './LearningSection.module.css';
 export const LearningSection: React.FC = () => {
   return (
     <section className={styles.learning} id="learning" aria-label="Chapter 05: Discovery & Learning">
-      <div className={`container ${styles.learningContainer}`}>
+      <div className={styles.learningContainer}>
         {/* Section Header */}
         <div className={styles.header}>
           <div className="calibration-badge">CHAPTER 05 · DISCOVERY & DISCOURSE</div>

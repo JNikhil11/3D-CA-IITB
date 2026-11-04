@@ -13,6 +13,7 @@ html {
   -webkit-text-size-adjust: 100%;
   background-color: var(--color-parchment);
   color: var(--color-ink);
+  overflow-x: clip;
 }
 
 body {
@@ -21,7 +22,7 @@ body {
   color: var(--color-ink);
   line-height: 1.6;
   font-weight: 400;
-  overflow-x: hidden;
+  overflow-x: clip;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

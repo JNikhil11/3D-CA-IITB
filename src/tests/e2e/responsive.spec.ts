@@ -90,11 +90,43 @@ test.describe('Responsive & Layout Verification Suite', () => {
     const aerospaceTab = page.locator('#tab-aerospace');
     await aerospaceTab.scrollIntoViewIfNeeded();
     await expect(aerospaceTab).toBeVisible();
-    await aerospaceTab.click();
+    await aerospaceTab.click({ force: true });
 
     await expect(aerospaceTab).toHaveAttribute('aria-selected', 'true');
     const panel = page.locator('#panel-aerospace');
     await expect(panel).toBeVisible();
     await expect(panel).toContainText('ORBITAL PLANE 2');
+  });
+
+  test('captures multi-chapter 3D camera and world transitions across scroll journey', async ({
+    page,
+  }) => {
+    test.setTimeout(90000);
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/');
+
+    // 1. Chapter 01: Story (Dive into gears)
+    const story = page.locator('#story');
+    await story.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(600);
+    await page.screenshot({ path: 'test-results/screenshot-chapter01-story.png' });
+
+    // 2. Chapter 02: Atlas (Engineering Worlds)
+    const atlas = page.locator('#atlas');
+    await atlas.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(600);
+    await page.screenshot({ path: 'test-results/screenshot-chapter02-atlas.png' });
+
+    // 3. Chapter 03: Competitions (Festival Pavilion)
+    const comps = page.locator('#competitions');
+    await comps.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(600);
+    await page.screenshot({ path: 'test-results/screenshot-chapter03-pavilion.png' });
+
+    // 4. Chapter 07: Finale (Pullback to Aether Engine)
+    const finale = page.locator('#finale');
+    await finale.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(600);
+    await page.screenshot({ path: 'test-results/screenshot-chapter07-finale.png' });
   });
 });

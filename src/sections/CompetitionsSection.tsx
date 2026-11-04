@@ -5,7 +5,7 @@ import styles from './CompetitionsSection.module.css';
 export const CompetitionsSection: React.FC = () => {
   return (
     <section className={styles.competitions} id="competitions" aria-label="Chapter 04: Flagship Competitions">
-      <div className={`container ${styles.compContainer}`}>
+      <div className={styles.compContainer}>
         {/* Section Header */}
         <div className={styles.header}>
           <div className="calibration-badge">CHAPTER 04 · COMPETITIONS</div>

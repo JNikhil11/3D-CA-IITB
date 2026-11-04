@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { AstrolabeCanvas } from '../scene/AstrolabeCanvas';
+import { BeaconModal } from '../scene/components/BeaconModal';
+import { BeaconData } from '../scene/pavilion/InteractiveBeacon';
 import { HeroSection } from '../sections/HeroSection';
 import { StorySection } from '../sections/StorySection';
 import { AtlasSection } from '../sections/AtlasSection';
@@ -17,6 +19,7 @@ import styles from './App.module.css';
 
 export const App: React.FC = () => {
   const [selectedDomain, setSelectedDomain] = useState<DomainItem>(DOMAINS[0]);
+  const [selectedBeacon, setSelectedBeacon] = useState<BeaconData | null>(null);
   const [scrollProgress, setScrollProgress] = useState<number>(0);
   const mainRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
@@ -74,9 +77,9 @@ export const App: React.FC = () => {
 
       {/* Main Semantic Page Content */}
       <main id="main-content" ref={mainRef} className={styles.mainContent}>
-        {/* Chapters 01 - 03: The Living Atlas Interactive Stage Journey */}
+        {/* Unified 5-Chapter Interactive Stage & Editorial Architecture */}
         <div className={styles.stageJourneySection}>
-          {/* Scrollable Editorial Column (Hero, Story, Atlas) */}
+          {/* Scrollable Editorial Column (Chapters 01 - 07) */}
           <div className={styles.editorialColumn}>
             <HeroSection
               onExploreClick={handleExploreClick}
@@ -85,8 +88,10 @@ export const App: React.FC = () => {
                   <div className={styles.mobileCanvasStage}>
                     <AstrolabeCanvas
                       scrollProgress={scrollProgress}
+                      activeDomain={selectedDomain.id}
                       activeDomainRing={selectedDomain.astrolabeTargetRing}
                       onRingSelect={handleRingSelect}
+                      onSelectBeacon={setSelectedBeacon}
                     />
                   </div>
                 ) : null
@@ -99,31 +104,36 @@ export const App: React.FC = () => {
               selectedDomain={selectedDomain.id}
               onSelectDomain={setSelectedDomain}
             />
+
+            <CompetitionsSection />
+            <LearningSection />
+            <AtmosphereSection />
+            <FinaleSection />
           </div>
 
-          {/* Desktop Sticky 3D Stage (Right Column, 100vh Sticky) */}
+          {/* Desktop Sticky 3D Stage (Right Column, 100vh Sticky for full user journey) */}
           {isDesktop && (
             <aside
               className={styles.desktopStickyCanvas}
-              aria-label="3D Mechanical Astrolabe Stage"
+              aria-label="3D Interactive Aether Engine Stage"
             >
               <AstrolabeCanvas
                 scrollProgress={scrollProgress}
+                activeDomain={selectedDomain.id}
                 activeDomainRing={selectedDomain.astrolabeTargetRing}
                 onRingSelect={handleRingSelect}
+                onSelectBeacon={setSelectedBeacon}
               />
             </aside>
           )}
         </div>
-
-        {/* Chapters 04 - 07: Expanded Chapters */}
-        <div className={styles.independentChapters}>
-          <CompetitionsSection />
-          <LearningSection />
-          <AtmosphereSection />
-          <FinaleSection />
-        </div>
       </main>
+
+      {/* Accessible Holographic Event Details Modal */}
+      <BeaconModal
+        beacon={selectedBeacon}
+        onClose={() => setSelectedBeacon(null)}
+      />
 
       {/* Global Colophon & Disclaimer Footer */}
       <Footer />

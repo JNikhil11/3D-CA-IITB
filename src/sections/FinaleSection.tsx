@@ -5,7 +5,7 @@ import styles from './FinaleSection.module.css';
 export const FinaleSection: React.FC = () => {
   return (
     <section className={styles.finale} id="finale" aria-label="Chapter 07: Final Invitation">
-      <div className={`container ${styles.finaleContainer}`}>
+      <div className={styles.finaleContainer}>
         <div className={styles.innerCard}>
           <div className="calibration-badge">CHAPTER 07 · EPILOGUE & PARTICIPATION</div>
 

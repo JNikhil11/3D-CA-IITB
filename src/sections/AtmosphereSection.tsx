@@ -5,7 +5,7 @@ import styles from './AtmosphereSection.module.css';
 export const AtmosphereSection: React.FC = () => {
   return (
     <section className={styles.atmosphere} id="atmosphere" aria-label="Chapter 06: Festival Atmosphere">
-      <div className={`container ${styles.atmosContainer}`}>
+      <div className={styles.atmosContainer}>
         {/* Section Header */}
         <div className={styles.header}>
           <div className="calibration-badge">CHAPTER 06 · FESTIVAL REALM</div>

@@ -1,17 +1,20 @@
 import React, { Suspense, useState, useEffect, useCallback, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { ContactShadows, Environment, Lightformer } from '@react-three/drei';
+import { Environment, Lightformer } from '@react-three/drei';
 import * as THREE from 'three';
-import { AstrolabeModel } from './AstrolabeModel';
+import { AetherEngineScene } from './AetherEngineScene';
 import { AstrolabeFallback } from './AstrolabeFallback';
+import { BeaconData } from './pavilion/InteractiveBeacon';
 import { useWindowSize } from '../hooks/useWindowSize';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import styles from './AstrolabeCanvas.module.css';
 
-interface AstrolabeCanvasProps {
+export interface AstrolabeCanvasProps {
   scrollProgress: number;
+  activeDomain?: string;
   activeDomainRing?: number;
   onRingSelect?: (ringIndex: number) => void;
+  onSelectBeacon?: (beacon: BeaconData) => void;
 }
 
 function isWebGLAvailable(): boolean {
@@ -29,8 +32,10 @@ function isWebGLAvailable(): boolean {
 
 export const AstrolabeCanvas: React.FC<AstrolabeCanvasProps> = ({
   scrollProgress,
+  activeDomain = 'robotics',
   activeDomainRing = 0,
   onRingSelect,
+  onSelectBeacon,
 }) => {
   const { isMobile, isTablet } = useWindowSize();
   const reducedMotion = useReducedMotion();
@@ -90,8 +95,17 @@ export const AstrolabeCanvas: React.FC<AstrolabeCanvasProps> = ({
     manualRotRef.current.y = 0;
   };
 
-  const objectScale = isMobile ? 0.72 : isTablet ? 0.88 : 1.02;
-  const objectPosY = isMobile ? 0.15 : 0;
+  // Determine active chapter label for HUD
+  const chapterLabel =
+    scrollProgress < 0.2
+      ? 'OPENING • THE AETHER ENGINE'
+      : scrollProgress < 0.38
+      ? 'CH 01 • ENTER THE ENGINE'
+      : scrollProgress < 0.65
+      ? 'CH 02 • WORLD OF ENGINEERING'
+      : scrollProgress < 0.88
+      ? 'CH 03 • TECHFEST EXPERIENCE'
+      : 'FINAL CH • ENTER TECHFEST';
 
   if (!hasWebGL || webGLError) {
     return (
@@ -109,14 +123,14 @@ export const AstrolabeCanvas: React.FC<AstrolabeCanvasProps> = ({
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
       role="region"
-      aria-label="3D Interactive Mechanical Astrolabe Stage"
+      aria-label="3D Interactive Aether Engine Stage"
     >
       {/* Interactive 3D Stage HUD Controls */}
       <div className={styles.stageHud} onPointerDown={(e) => e.stopPropagation()}>
         <div className={styles.hudTopRow}>
           <div className={styles.hudBadge}>
             <span className={styles.hudPulse} />
-            <span className={styles.hudText}>3D INTERACTIVE STAGE</span>
+            <span className={styles.hudText}>{chapterLabel}</span>
           </div>
           <span className={styles.dragPrompt}>✦ DRAG OR TOUCH TO ROTATE 360°</span>
         </div>
@@ -132,7 +146,7 @@ export const AstrolabeCanvas: React.FC<AstrolabeCanvasProps> = ({
             aria-pressed={explodedView}
             title="Toggle exploded mechanical inspection"
           >
-            <span>{explodedView ? 'Collapse Orrery' : 'Explode Rings'}</span>
+            <span>{explodedView ? 'Collapse Mechanism' : 'Explode Mechanism'}</span>
           </button>
 
           <button
@@ -149,7 +163,7 @@ export const AstrolabeCanvas: React.FC<AstrolabeCanvasProps> = ({
 
           {onRingSelect && (
             <div className={styles.ringQuickSelect} onClick={(e) => e.stopPropagation()}>
-              <span className={styles.ringQuickLabel}>ALIGN RING:</span>
+              <span className={styles.ringQuickLabel}>SECTOR:</span>
               {[0, 1, 2, 3].map((ringIdx) => (
                 <button
                   key={ringIdx}
@@ -158,10 +172,10 @@ export const AstrolabeCanvas: React.FC<AstrolabeCanvasProps> = ({
                     activeDomainRing === ringIdx ? styles.ringBtnActive : ''
                   }`}
                   onClick={() => onRingSelect(ringIdx)}
-                  aria-label={`Align Ring ${ringIdx + 1}`}
+                  aria-label={`Align Sector ${ringIdx + 1}`}
                   aria-pressed={activeDomainRing === ringIdx}
                 >
-                  R{ringIdx + 1}
+                  S{ringIdx + 1}
                 </button>
               ))}
             </div>
@@ -171,8 +185,8 @@ export const AstrolabeCanvas: React.FC<AstrolabeCanvasProps> = ({
 
       <Suspense fallback={<AstrolabeFallback reducedMotion={reducedMotion} />}>
         <Canvas
-          camera={{ position: [0, 0.4, 7.2], fov: 46 }}
-          dpr={isMobile ? [1, 1.25] : [1, 1.75]}
+          camera={{ position: [0, 0.4, 7.4], fov: 46 }}
+          dpr={isMobile ? [1, 1.25] : isTablet ? [1, 1.5] : [1, 1.75]}
           gl={{
             antialias: true,
             alpha: true,
@@ -224,45 +238,17 @@ export const AstrolabeCanvas: React.FC<AstrolabeCanvasProps> = ({
             />
           </Environment>
 
-          {/* Direct Physical Lights */}
-          <ambientLight intensity={0.65} color="#FBF7EE" />
-
-          {/* Golden Key Sunlight */}
-          <directionalLight
-            position={[5, 7, 5]}
-            intensity={2.2}
-            color="#FFF2CC"
-            castShadow
+          {/* Master 5-Chapter Scene */}
+          <AetherEngineScene
+            scrollProgress={scrollProgress}
+            activeDomain={activeDomain}
+            activeDomainRing={activeDomainRing}
+            explodedView={explodedView}
+            reducedMotion={reducedMotion}
+            manualRotationRef={manualRotRef}
+            mousePositionRef={mousePosRef}
+            onSelectBeacon={onSelectBeacon || (() => {})}
           />
-
-          {/* Ultramarine Fill Light */}
-          <directionalLight
-            position={[-5, -2, -3]}
-            intensity={1.4}
-            color="#344FC1"
-          />
-
-          {/* Pedestal Contact Shadow on Parchment Plane */}
-          <ContactShadows
-            position={[0, -2.55, 0]}
-            opacity={0.68}
-            scale={8.5}
-            blur={2.4}
-            far={4.2}
-            color="#272721"
-            frames={1}
-          />
-
-          <group position={[0, objectPosY, 0]} scale={[objectScale, objectScale, objectScale]}>
-            <AstrolabeModel
-              scrollProgress={scrollProgress}
-              mousePositionRef={mousePosRef}
-              activeDomainRing={activeDomainRing}
-              explodedView={explodedView}
-              reducedMotion={reducedMotion}
-              manualRotationRef={manualRotRef}
-            />
-          </group>
         </Canvas>
       </Suspense>
     </div>
