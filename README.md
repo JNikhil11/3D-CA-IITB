@@ -1,7 +1,10 @@
 # 3D CA-IITB
 
 > **Techfest 30 | IIT Bombay — The Living Atlas**  
-> *An Aetherial Renaissance: 3D Interactive Experience & College Ambassador Web Initiative*
+> *An Aetherial Renaissance: 3D Interactive Experience & College Ambassador Web Initiative*  
+> **Live Production Demo:** [https://3d-ca-iitb.vercel.app](https://3d-ca-iitb.vercel.app)
+
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-3d--ca--iitb.vercel.app-success.svg)](https://3d-ca-iitb.vercel.app)
 
 [![Typecheck](https://img.shields.io/badge/TypeScript-Strict%20Passed-blue.svg)](file:///PROJECT_BRIEF.md)
 [![Lint](https://img.shields.io/badge/ESLint-9.x%20Clean-brightgreen.svg)](file:///eslint.config.js)
