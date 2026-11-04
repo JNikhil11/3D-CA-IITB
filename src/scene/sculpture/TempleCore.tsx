@@ -1,12 +1,14 @@
 /**
  * The Radiant Stellar Core of the Aether Temple Engine
  *
- * Implements the incandescent sun sphere surrounded by physical 3D
- * cooling slats/louvers, equatorial magnetic clamps, and high-intensity
- * point light illumination.
+ * Implements:
+ * 1. The incandescent sun sphere surrounded by physical 3D cooling louvers
+ * 2. Heavy equatorial heat-shield ring & brass magnetic restraints
+ * 3. 3D Neural Lattice sub-assembly for Chapter 03 (Cognitive Computing):
+ *    Synaptic tensor nodes and quantum waveguide lines pulsing with intelligence
  */
 
-import React, { useRef } from 'react';
+import React, { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { createGlowingSunTexture } from './aetherTempleTextures';
@@ -19,14 +21,44 @@ export const TempleCore: React.FC<TempleCoreProps> = ({ scale = 1.0 }) => {
   const innerSunRef = useRef<THREE.Mesh>(null);
   const coronaRef = useRef<THREE.Mesh>(null);
   const lightRef = useRef<THREE.PointLight>(null);
+  const neuralGroupRef = useRef<THREE.Group>(null);
 
-  const sunTexture = React.useMemo(() => createGlowingSunTexture(), []);
+  const sunTexture = useMemo(() => createGlowingSunTexture(), []);
 
   React.useEffect(() => {
     return () => {
       sunTexture.dispose();
     };
   }, [sunTexture]);
+
+  // Procedural neural nodes coordinates
+  const neuralNodes = useMemo(() => {
+    const nodes: [number, number, number][] = [];
+    const count = 16;
+    for (let i = 0; i < count; i++) {
+      const phi = Math.acos(-1 + (2 * i) / count);
+      const theta = Math.sqrt(count * Math.PI) * phi;
+      const r = 1.28;
+      nodes.push([
+        r * Math.cos(theta) * Math.sin(phi),
+        r * Math.cos(phi),
+        r * Math.sin(theta) * Math.sin(phi),
+      ]);
+    }
+    return nodes;
+  }, []);
+
+  // Synaptic connector line vertices
+  const neuralLinePositions = useMemo(() => {
+    const points: number[] = [];
+    for (let i = 0; i < neuralNodes.length; i++) {
+      const next = (i + 1) % neuralNodes.length;
+      const cross = (i + 3) % neuralNodes.length;
+      points.push(...neuralNodes[i], ...neuralNodes[next]);
+      points.push(...neuralNodes[i], ...neuralNodes[cross]);
+    }
+    return new Float32Array(points);
+  }, [neuralNodes]);
 
   useFrame((state, delta) => {
     const t = state.clock.getElapsedTime();
@@ -38,13 +70,19 @@ export const TempleCore: React.FC<TempleCoreProps> = ({ scale = 1.0 }) => {
       innerSunRef.current.scale.set(pulse, pulse, pulse);
     }
 
-    // Dynamic light pulsation matching target image incandescence
+    // Dynamic light pulsation matching incandescence
     if (lightRef.current) {
       lightRef.current.intensity = 24.0 + Math.sin(t * 3.5) * 3.0;
     }
 
     if (coronaRef.current) {
       coronaRef.current.rotation.z -= delta * 0.08;
+    }
+
+    // Dynamic rotation and synaptic firing in Neural Lattice
+    if (neuralGroupRef.current) {
+      neuralGroupRef.current.rotation.y += delta * 0.22;
+      neuralGroupRef.current.rotation.x = Math.sin(t * 0.5) * 0.15;
     }
   });
 
@@ -134,6 +172,42 @@ export const TempleCore: React.FC<TempleCoreProps> = ({ scale = 1.0 }) => {
           metalness={0.96}
         />
       </mesh>
+
+      {/* ------------------------------------------------------------- */}
+      {/* CHAPTER 03: SYNAPTIC NEURAL LATTICE                           */}
+      {/* Interconnected glowing computational tensor nodes and traces  */}
+      {/* ------------------------------------------------------------- */}
+      <group ref={neuralGroupRef}>
+        {/* Synaptic Light Rays (Line Segments) */}
+        <lineSegments>
+          <bufferGeometry>
+            <bufferAttribute
+              attach="attributes-position"
+              args={[neuralLinePositions, 3]}
+            />
+          </bufferGeometry>
+          <lineBasicMaterial
+            color="#00E5FF"
+            transparent
+            opacity={0.65}
+            blending={THREE.AdditiveBlending}
+          />
+        </lineSegments>
+
+        {/* Neural Tensor Nodes */}
+        {neuralNodes.map((pos, idx) => (
+          <mesh key={idx} position={pos}>
+            <sphereGeometry args={[0.038, 12, 12]} />
+            <meshStandardMaterial
+              color="#00E5FF"
+              emissive="#00B0FF"
+              emissiveIntensity={3.5}
+              roughness={0.1}
+              metalness={0.9}
+            />
+          </mesh>
+        ))}
+      </group>
 
       {/* Translucent radiant energy corona */}
       <mesh ref={coronaRef}>

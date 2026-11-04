@@ -1,54 +1,86 @@
 /**
- * App.tsx — Immersive Full-Bleed 3D Architecture
+ * App.tsx — The Living Atlas Master Pinned Scrollytelling Architecture
  *
- * Performance & Visual Delivery:
- * 1. Coordinated 1.7-second cinematic reveal curtain (no FOUC, no pop-in)
- * 2. High-performance scroll tracking decoupled from React state (zero DOM re-renders on scroll)
- * 3. Translucent Renaissance vellum content panels revealing 3D atlas behind
- * 4. High-contrast carbon ink typography for AAA legibility
+ * Architecture:
+ * 1. Pinned 600vh Storytelling Stage driven by authoritative GSAP ScrollTrigger scrub
+ * 2. The Atlas as Hero & Foreground commanding 75-85% of the viewport
+ * 3. 6 synchronised chapters: Discovery, Robotics, Aerospace, Computing, Sustainability, Finale
+ * 4. Zero rectangular card boxes: pure negative space editorial typography with SVG leader lines
+ * 5. Full backwards scrub capability with natural reverse animations
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { InitialRevealCurtain } from '../components/InitialRevealCurtain';
 import { ImmersiveCanvas } from '../scene/ImmersiveCanvas';
-import { HeroChapter } from '../sections/chapters/HeroChapter';
-import { EnterEngineChapter } from '../sections/chapters/EnterEngineChapter';
-import { WorldsChapter } from '../sections/chapters/WorldsChapter';
-import { FestivalChapter } from '../sections/chapters/FestivalChapter';
+import { DiscoveryChapter } from '../sections/chapters/DiscoveryChapter';
+import { RoboticsChapter } from '../sections/chapters/RoboticsChapter';
+import { AerospaceChapter } from '../sections/chapters/AerospaceChapter';
+import { ComputingChapter } from '../sections/chapters/ComputingChapter';
+import { SustainabilityChapter } from '../sections/chapters/SustainabilityChapter';
 import { FinaleChapter } from '../sections/chapters/FinaleChapter';
-import { initScrollListener, subscribeScroll } from '../motion/scrollState';
+import {
+  setScrollProgress,
+  getActiveChapterIndex,
+  CHAPTERS,
+} from '../motion/scrollState';
 import styles from './App.module.css';
 
+// Register GSAP ScrollTrigger plugin
+gsap.registerPlugin(ScrollTrigger);
+
 export const App: React.FC = () => {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const progressBarRef = useRef<HTMLDivElement>(null);
+
+  const [activeIndex, setActiveIndex] = useState(0);
   const [canvasReady, setCanvasReady] = useState(false);
   const [fontsReady, setFontsReady] = useState(false);
   const [loadProgress, setLoadProgress] = useState(0);
-  const [isRevealed, setIsRevealed] = useState(false);
   const [showScrollHint, setShowScrollHint] = useState(true);
 
-  // Initialize decoupled scroll listener
+  // Initialize GSAP ScrollTrigger master scrub timeline
   useEffect(() => {
-    const cleanupScroll = initScrollListener();
-    const cleanupSub = subscribeScroll((state) => {
-      if (state.scrollY > 80) {
-        setShowScrollHint(false);
-      }
+    if (!trackRef.current) return;
+
+    const trigger = ScrollTrigger.create({
+      trigger: trackRef.current,
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: 0.8,
+      onUpdate: (self) => {
+        const prog = self.progress;
+        setScrollProgress(prog, self.getVelocity());
+
+        // Update top progress bar
+        if (progressBarRef.current) {
+          progressBarRef.current.style.width = `${(prog * 100).toFixed(1)}%`;
+        }
+
+        // Update active chapter index
+        const idx = getActiveChapterIndex(prog);
+        setActiveIndex(idx);
+
+        if (prog > 0.02) {
+          setShowScrollHint(false);
+        }
+      },
     });
 
     return () => {
-      cleanupScroll();
-      cleanupSub();
+      trigger.kill();
     };
   }, []);
 
-  // Track font loading
+  // Track font decoding readiness
   useEffect(() => {
     if (typeof document !== 'undefined' && 'fonts' in document) {
       document.fonts.ready
         .then(() => setFontsReady(true))
-        .catch(() => setFontsReady(true)); // Fallback if font API errors
+        .catch(() => setFontsReady(true));
     } else {
       setFontsReady(true);
     }
@@ -62,17 +94,23 @@ export const App: React.FC = () => {
     setLoadProgress(prog);
   }, []);
 
-  const handleCurtainExited = useCallback(() => {
-    setIsRevealed(true);
-  }, []);
+  // Jump to specific chapter on dot click
+  const handleChapterClick = (index: number) => {
+    const targetProg = CHAPTERS[index].range[0] + 0.01;
+    const maxScroll =
+      document.documentElement.scrollHeight - window.innerHeight;
+    window.scrollTo({
+      top: targetProg * maxScroll,
+      behavior: 'smooth',
+    });
+  };
 
-  // Reveal experience when assets and canvas are confirmed ready
   const isReady = canvasReady && fontsReady;
 
   return (
     <div className={styles.appRoot}>
       {/* Accessible skip link */}
-      <a href="#main-content" className={styles.skipLink}>
+      <a href="#story-stage" className={styles.skipLink}>
         Skip to main content
       </a>
 
@@ -80,90 +118,73 @@ export const App: React.FC = () => {
       <InitialRevealCurtain
         isReady={isReady}
         loadProgress={loadProgress}
-        onExited={handleCurtainExited}
       />
 
-      {/* Global Navigation — above the canvas (z:50) */}
+      {/* Global Navigation — above the stage (z:50) */}
       <Navbar />
 
-      {/* Fixed 3D Canvas — lives behind everything at z:0 */}
-      <ImmersiveCanvas
-        onCanvasReady={handleCanvasReady}
-        onLoadProgress={handleLoadProgress}
+      {/* Global scroll progress line at top of viewport */}
+      <div
+        ref={progressBarRef}
+        className={styles.storyProgressBar}
+        style={{ width: '0%' }}
+        aria-hidden="true"
       />
 
-      {/* Scroll-driven editorial chapters — z:10, scroll over canvas with vellum cards */}
-      <main
-        id="main-content"
-        className={`${styles.scrollStream} ${isRevealed ? styles.scrollStreamRevealed : ''}`}
-      >
-        {/* Chapter 00 — Opening: The Aether Engine */}
-        <section
-          id="hero"
-          className={`${styles.chapterPanel} ${styles.heroPanel} ${styles.leftPanel}`}
-          aria-label="Opening: The Aether Engine"
-        >
-          <div className={styles.glassCard}>
-            <HeroChapter
-              onExploreClick={() => {
-                document
-                  .getElementById('enter-engine')
-                  ?.scrollIntoView({ behavior: 'smooth' });
-              }}
+      {/* Right-edge chapter navigation dots */}
+      <nav className={styles.chapterNav} aria-label="Chapter Navigation">
+        {CHAPTERS.map((ch, idx) => (
+          <button
+            key={ch.id}
+            type="button"
+            className={`${styles.chapterDot} ${activeIndex === idx ? styles.chapterDotActive : ''}`}
+            onClick={() => handleChapterClick(idx)}
+            aria-label={`Jump to Chapter ${ch.number}: ${ch.title}`}
+            aria-current={activeIndex === idx ? 'step' : undefined}
+          />
+        ))}
+      </nav>
+
+      {/* 600vh Native Scroll Track */}
+      <div ref={trackRef} className={styles.storyTrack} id="story-track">
+        {/* Pinned 100vh Storytelling Viewport Stage */}
+        <main id="story-stage" className={styles.pinnedStage}>
+          {/* Fixed 3D Atlas Stage — Foreground Hero */}
+          <div className={styles.canvasContainer}>
+            <ImmersiveCanvas
+              onCanvasReady={handleCanvasReady}
+              onLoadProgress={handleLoadProgress}
             />
           </div>
-        </section>
 
-        {/* Chapter 01 — Enter the Engine */}
-        <section
-          id="enter-engine"
-          className={`${styles.chapterPanel} ${styles.rightPanel}`}
-          aria-label="Chapter 01: Enter the Engine"
-        >
-          <div className={styles.glassCard}>
-            <EnterEngineChapter />
+          {/* Synchronized Negative Space Editorial Chapters Overlay */}
+          <div className={styles.editorialStage}>
+            {/* Chapter 00 — The Discovery */}
+            <DiscoveryChapter
+              active={activeIndex === 0}
+              onExploreClick={() => handleChapterClick(1)}
+            />
+
+            {/* Chapter 01 — Robotics & Kinetic Systems */}
+            <RoboticsChapter active={activeIndex === 1} />
+
+            {/* Chapter 02 — Aerospace & Orbital Dynamics */}
+            <AerospaceChapter active={activeIndex === 2} />
+
+            {/* Chapter 03 — Cognitive Computing & Intelligence */}
+            <ComputingChapter active={activeIndex === 3} />
+
+            {/* Chapter 04 — Sustainable Earth Systems */}
+            <SustainabilityChapter active={activeIndex === 4} />
+
+            {/* Chapter 05 — Enter Techfest 30 Grand Finale */}
+            <FinaleChapter active={activeIndex === 5} />
           </div>
-        </section>
-
-        {/* Chapter 02 — The World of Engineering */}
-        <section
-          id="worlds"
-          className={`${styles.chapterPanel} ${styles.leftPanel}`}
-          aria-label="Chapter 02: The World of Engineering"
-        >
-          <div className={styles.glassCard}>
-            <WorldsChapter />
-          </div>
-        </section>
-
-        {/* Chapter 03 — The Techfest Experience */}
-        <section
-          id="festival"
-          className={`${styles.chapterPanel} ${styles.rightPanel}`}
-          aria-label="Chapter 03: The Techfest Experience"
-        >
-          <div className={styles.glassCard}>
-            <FestivalChapter />
-          </div>
-        </section>
-
-        {/* Final Chapter — Enter Techfest */}
-        <section
-          id="finale"
-          className={`${styles.chapterPanel} ${styles.centrePanel}`}
-          aria-label="Final Chapter: Enter Techfest"
-        >
-          <div className={`${styles.glassCard} ${styles.parchmentCard}`}>
-            <FinaleChapter />
-          </div>
-        </section>
-
-        {/* Footer transition zone — fades canvas into deep cosmic void */}
-        <div className={styles.footerSpacer} />
-      </main>
+        </main>
+      </div>
 
       {/* Scroll indicator — fades when user starts scrolling */}
-      {showScrollHint && isRevealed && (
+      {showScrollHint && (
         <div className={styles.scrollIndicator} aria-hidden="true">
           <div className={styles.scrollIndicatorLine} />
           <div className={styles.scrollIndicatorDot} />

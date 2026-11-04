@@ -185,42 +185,42 @@ export const TemplePlatform: React.FC = () => {
       </group>
 
       {/* ============================================================== */}
-      {/* 5. PERIPHERAL CAPACITOR PYLONS (Corner Energy Towers)          */}
+      {/* 5. PERIPHERAL CAPACITOR PYLONS (Sustainable Energy Leylines)   */}
       {/* ============================================================== */}
-      {/* Front-Left Pylon */}
+      {/* Front-Left Pylon with Clean Energy Emerald Leyline */}
       <group position={[-3.1, 0.05, 1.8]}>
         <mesh position={[0, 0.5, 0]}>
           <cylinderGeometry args={[0.2, 0.25, 1.0, 6]} />
-          <meshStandardMaterial color="#101622" roughness={0.25} metalness={0.92} />
+          <meshStandardMaterial color="#0A1118" roughness={0.2} metalness={0.92} />
         </mesh>
         <mesh position={[0, 0.5, 0]}>
           <cylinderGeometry args={[0.22, 0.27, 1.02, 6]} />
-          <meshStandardMaterial color="#D4A853" roughness={0.2} metalness={0.95} wireframe />
+          <meshStandardMaterial color="#10B981" roughness={0.2} metalness={0.95} wireframe />
         </mesh>
         {/* Glowing capstone */}
         <mesh position={[0, 1.05, 0]}>
           <octahedronGeometry args={[0.13, 0]} />
-          <meshStandardMaterial color="#FFA520" emissive="#FFA520" emissiveIntensity={3.5} />
+          <meshStandardMaterial color="#10B981" emissive="#059669" emissiveIntensity={4.2} />
         </mesh>
-        <pointLight position={[0, 1.05, 0]} color="#FFA520" intensity={2.0} distance={3.0} />
+        <pointLight position={[0, 1.05, 0]} color="#10B981" intensity={2.8} distance={3.5} />
       </group>
 
-      {/* Front-Right Pylon */}
+      {/* Front-Right Pylon with Clean Energy Cyan Leyline */}
       <group position={[3.1, 0.05, 1.8]}>
         <mesh position={[0, 0.5, 0]}>
           <cylinderGeometry args={[0.2, 0.25, 1.0, 6]} />
-          <meshStandardMaterial color="#101622" roughness={0.25} metalness={0.92} />
+          <meshStandardMaterial color="#0A1118" roughness={0.2} metalness={0.92} />
         </mesh>
         <mesh position={[0, 0.5, 0]}>
           <cylinderGeometry args={[0.22, 0.27, 1.02, 6]} />
-          <meshStandardMaterial color="#D4A853" roughness={0.2} metalness={0.95} wireframe />
+          <meshStandardMaterial color="#00E5FF" roughness={0.2} metalness={0.95} wireframe />
         </mesh>
         {/* Glowing capstone */}
         <mesh position={[0, 1.05, 0]}>
           <octahedronGeometry args={[0.13, 0]} />
-          <meshStandardMaterial color="#FFA520" emissive="#FFA520" emissiveIntensity={3.5} />
+          <meshStandardMaterial color="#00E5FF" emissive="#0284C7" emissiveIntensity={4.2} />
         </mesh>
-        <pointLight position={[0, 1.05, 0]} color="#FFA520" intensity={2.0} distance={3.0} />
+        <pointLight position={[0, 1.05, 0]} color="#00E5FF" intensity={2.8} distance={3.5} />
       </group>
 
       {/* ============================================================== */}

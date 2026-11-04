@@ -7,13 +7,14 @@
   --color-ink-muted: #55554D;
   --color-ink-faint: #8E8E82;
 
-  /* Translucent Renaissance Vellum & Carbon Ink tokens */
-  --color-vellum-base: rgba(244, 239, 230, 0.78);
-  --color-vellum-mobile: rgba(246, 242, 234, 0.84);
-  --color-ink-deep: #1B1B16;
-  --color-ink-body: #2E2C24;
-  --color-deckle-border: rgba(180, 142, 60, 0.38);
-  --shadow-vellum: inset 0 0 0 1px rgba(255, 255, 255, 0.45), 0 16px 48px rgba(3, 5, 10, 0.45);
+  /* Negative Space Editorial & Reticle Palette */
+  --color-ink-deep: #0D1117;
+  --color-ink-body: #1E232B;
+  --color-gold-reticle: #D4AF37;
+  --color-gold-reticle-glow: rgba(212, 175, 55, 0.45);
+  --color-cyan-glow: #00E5FF;
+  --color-emerald-glow: #10B981;
+  --color-dark-bg: #03050A;
 
   --color-vermilion: #BF4F35;
   --color-vermilion-hover: #A83E26;
@@ -27,14 +28,11 @@
   --color-sage: #527B65;
   --color-sage-subtle: #DEE8E1;
   --color-warm-white: #FBF9F3;
-  --color-card-border: rgba(39, 39, 33, 0.12);
-  --color-card-border-strong: rgba(39, 39, 33, 0.28);
-  --color-card-border-gold: rgba(217, 175, 86, 0.35);
 
-  /* Typography Stacks */
-  --font-serif: 'Cormorant Garamond', Garamond, 'Georgia', serif;
+  /* Typography Stacks: Instrument Serif (Display), Space Grotesk (Body), IBM Plex Mono (Technical) */
+  --font-serif: 'Instrument Serif', 'Cormorant Garamond', Garamond, 'Georgia', serif;
   --font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'Space Mono', 'JetBrains Mono', SFMono-Regular, Menlo, monospace;
+  --font-mono: 'IBM Plex Mono', 'Space Mono', 'JetBrains Mono', Menlo, monospace;
 
   /* Fluid Spacing Scale */
   --space-2xs: 0.25rem;
@@ -51,9 +49,9 @@
   /* Layout Containers */
   --container-max: 1240px;
   --container-reading: 68ch;
-  --gutter-desktop: 2.5rem;
-  --gutter-tablet: 1.5rem;
-  --gutter-mobile: 1rem;
+  --gutter-desktop: 3rem;
+  --gutter-tablet: 1.75rem;
+  --gutter-mobile: 1.25rem;
 
   /* Borders & Shadows */
   --radius-sm: 2px;
@@ -72,10 +70,9 @@
   --transition-slow: 600ms var(--ease-editorial);
 
   /* Z-Index Hierarchy */
-  --z-canvas-back: 1;
-  --z-content: 10;
-  --z-canvas-interactive: 20;
+  --z-canvas: 1;
+  --z-leader-line: 15;
+  --z-editorial: 20;
   --z-header: 50;
-  --z-modal: 100;
-  --z-tooltip: 110;
+  --z-curtain: 9999;
 }

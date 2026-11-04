@@ -1,11 +1,12 @@
 /**
- * ImmersiveCanvas — Full-viewport fixed WebGL stage.
+ * ImmersiveCanvas — The Living Atlas as Hero & Foreground
  *
- * Performance Architecture:
- * 1. Decoupled from React scroll state — reads scrollState.progress directly inside useFrame
- * 2. Emits onCanvasReady only after first WebGL frame buffer swap and shader warmup
- * 3. Houses the master Aether Temple Engine and 4 specialized chapter environments
- * 4. Zero DOM re-renders during scrolling for locked 60/90/120 FPS
+ * Architecture:
+ * 1. Monumental 3D Aether Temple Engine occupying 75-85% of viewport
+ * 2. 6-Chapter Camera Choreography driven by authoritative scrollState.progress
+ * 3. Screen projection of 3D chapter focal points for dynamic SVG leader lines
+ * 4. First-frame buffer swap and shader warmup before curtain release
+ * 5. Fluid 60/90/120 FPS rendering decoupled from React state churn
  */
 
 import React, {
@@ -24,13 +25,12 @@ import {
 } from '@react-three/drei';
 import * as THREE from 'three';
 import { AetherTempleEngine } from './sculpture/AetherTempleEngine';
-import { RoboticsEnvironment } from './chapters/RoboticsEnvironment';
-import { AerospaceEnvironment } from './chapters/AerospaceEnvironment';
-import { ComputingEnvironment } from './chapters/ComputingEnvironment';
-import { FestivalEnvironment } from './chapters/FestivalEnvironment';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { useWindowSize } from '../hooks/useWindowSize';
-import { scrollState } from '../motion/scrollState';
+import {
+  scrollState,
+  CHAPTERS,
+} from '../motion/scrollState';
 import styles from './ImmersiveCanvas.module.css';
 
 export interface ImmersiveCanvasProps {
@@ -63,7 +63,7 @@ function AssetProgressTracker({
 }
 
 /**
- * Ensures initial frame buffer swap and proactively warms up WebGL shaders
+ * Ensures initial frame buffer swap and warms up WebGL shaders
  */
 function FirstFrameTracker({ onReady }: { onReady: () => void }) {
   const count = useRef(0);
@@ -74,11 +74,10 @@ function FirstFrameTracker({ onReady }: { onReady: () => void }) {
     count.current += 1;
 
     if (count.current === 1) {
-      // Proactively warm up WebGL shaders to avoid runtime stutter
       try {
         gl.compile(scene, camera);
       } catch {
-        // Fallback gracefully if compile fails in test mock
+        // Fallback gracefully
       }
     }
 
@@ -92,87 +91,132 @@ function FirstFrameTracker({ onReady }: { onReady: () => void }) {
 }
 
 /**
- * Continuous 5-Chapter Camera Choreography
- * Direct frame sampling from scrollState.progress (zero React re-renders)
+ * Continuous 6-Chapter Camera Choreography through the Atlas
  */
-function ScrollCamera({ reducedMotion }: { reducedMotion: boolean }) {
+function ScrollCamera({
+  reducedMotion,
+  isMobile,
+}: {
+  reducedMotion: boolean;
+  isMobile: boolean;
+}) {
   const { camera } = useThree();
-  const targetPos = useRef(new THREE.Vector3(0, 1.25, 9.2));
-  const targetLook = useRef(new THREE.Vector3(0, 0.2, 0));
+  const targetPos = useRef(new THREE.Vector3(0, 1.8, 8.8));
+  const targetLook = useRef(new THREE.Vector3(0, 0.5, 0));
 
   useFrame(() => {
     const p = scrollState.progress;
 
-    if (p < 0.2) {
-      // Opening Hero: Wide establishing 3/4 view of the temple engine
-      const t = p / 0.2;
+    if (p < 0.16) {
+      // Chapter 00: The Discovery — Monumental establishing wide view
+      const t = p / 0.16;
       targetPos.current.set(
-        THREE.MathUtils.lerp(0, 0.5, t),
-        THREE.MathUtils.lerp(1.25, 0.9, t),
-        THREE.MathUtils.lerp(9.2, 8.0, t)
+        THREE.MathUtils.lerp(0, 0.2, t),
+        THREE.MathUtils.lerp(isMobile ? 2.2 : 1.8, 1.6, t),
+        THREE.MathUtils.lerp(isMobile ? 10.5 : 8.8, 8.4, t)
       );
-      targetLook.current.set(0, 0.2, 0);
-    } else if (p < 0.4) {
-      // Chapter 01: Enter the Engine (Zoom macro travel inside the gimbals & core)
-      const t = (p - 0.2) / 0.2;
+      targetLook.current.set(0, 0.5, 0);
+    } else if (p < 0.34) {
+      // Chapter 01: Robotics — Swoop to lower kinematic drive & gear train
+      const t = (p - 0.16) / 0.18;
       targetPos.current.set(
-        THREE.MathUtils.lerp(0.5, 0.0, t),
-        THREE.MathUtils.lerp(0.9, 0.4, t),
-        THREE.MathUtils.lerp(8.0, 4.4, t)
-      );
-      targetLook.current.set(0, 0.4, 0);
-    } else if (p < 0.62) {
-      // Chapter 02: Robotics Forge (Camera sweeps to the West Wing industrial cell)
-      const t = (p - 0.4) / 0.22;
-      targetPos.current.set(
-        THREE.MathUtils.lerp(0.0, -3.2, t),
-        THREE.MathUtils.lerp(0.4, 0.8, t),
-        THREE.MathUtils.lerp(4.4, 5.2, t)
+        THREE.MathUtils.lerp(0.2, isMobile ? -1.4 : -2.2, t),
+        THREE.MathUtils.lerp(1.6, -0.6, t),
+        THREE.MathUtils.lerp(8.4, isMobile ? 4.5 : 3.6, t)
       );
       targetLook.current.set(
-        THREE.MathUtils.lerp(0, -4.2, t),
-        THREE.MathUtils.lerp(0.4, 0.3, t),
-        THREE.MathUtils.lerp(0, -0.8, t)
+        THREE.MathUtils.lerp(0, -0.4, t),
+        THREE.MathUtils.lerp(0.5, -0.8, t),
+        THREE.MathUtils.lerp(0, 0.3, t)
       );
-    } else if (p < 0.82) {
-      // Chapter 03: Aerospace & Deep Space (Camera sweeps across to orbital satellite)
-      const t = (p - 0.62) / 0.2;
+    } else if (p < 0.5) {
+      // Chapter 02: Aerospace — Sweeping transit along 40° observation yoke & satellite
+      const t = (p - 0.34) / 0.16;
       targetPos.current.set(
-        THREE.MathUtils.lerp(-3.2, 3.4, t),
-        THREE.MathUtils.lerp(0.8, 1.4, t),
-        THREE.MathUtils.lerp(5.2, 5.5, t)
+        THREE.MathUtils.lerp(isMobile ? -1.4 : -2.2, isMobile ? 2.2 : 3.4, t),
+        THREE.MathUtils.lerp(-0.6, 2.2, t),
+        THREE.MathUtils.lerp(isMobile ? 4.5 : 3.6, isMobile ? 5.2 : 4.2, t)
       );
       targetLook.current.set(
-        THREE.MathUtils.lerp(-4.2, 4.2, t),
-        THREE.MathUtils.lerp(0.3, 0.6, t),
-        THREE.MathUtils.lerp(-0.8, -0.6, t)
+        THREE.MathUtils.lerp(-0.4, 1.3, t),
+        THREE.MathUtils.lerp(-0.8, 1.4, t),
+        THREE.MathUtils.lerp(0.3, -0.2, t)
       );
-    } else if (p < 0.92) {
-      // Chapter 04: Computing & Neural Matrix (Camera ascends to quantum vault)
-      const t = (p - 0.82) / 0.1;
+    } else if (p < 0.68) {
+      // Chapter 03: Cognitive Computing — Macro dive directly into incandescent core & neural lattice
+      const t = (p - 0.5) / 0.18;
       targetPos.current.set(
-        THREE.MathUtils.lerp(3.4, 0.0, t),
-        THREE.MathUtils.lerp(1.4, 3.6, t),
-        THREE.MathUtils.lerp(5.5, 5.0, t)
+        THREE.MathUtils.lerp(isMobile ? 2.2 : 3.4, 0.0, t),
+        THREE.MathUtils.lerp(2.2, 0.55, t),
+        THREE.MathUtils.lerp(isMobile ? 5.2 : 4.2, isMobile ? 2.8 : 2.1, t)
       );
-      targetLook.current.set(0, 2.8, -2.5);
+      targetLook.current.set(
+        THREE.MathUtils.lerp(1.3, 0.0, t),
+        THREE.MathUtils.lerp(1.4, 0.55, t),
+        THREE.MathUtils.lerp(-0.2, -0.5, t)
+      );
+    } else if (p < 0.84) {
+      // Chapter 04: Sustainable Earth — Sweep across stepped obsidian dais & capacitor pylons
+      const t = (p - 0.68) / 0.16;
+      targetPos.current.set(
+        THREE.MathUtils.lerp(0.0, isMobile ? -2.2 : -3.2, t),
+        THREE.MathUtils.lerp(0.55, 0.2, t),
+        THREE.MathUtils.lerp(isMobile ? 2.8 : 2.1, isMobile ? 5.8 : 4.8, t)
+      );
+      targetLook.current.set(
+        THREE.MathUtils.lerp(0.0, -0.8, t),
+        THREE.MathUtils.lerp(0.55, -1.2, t),
+        THREE.MathUtils.lerp(-0.5, 0.5, t)
+      );
     } else {
-      // Chapter 05: Grand Festival Finale (Pull back to grand panoramic elevation with sky beacon)
-      const t = (p - 0.92) / 0.08;
+      // Chapter 05: Enter Techfest 30 Grand Finale — Grand panoramic elevation pullback
+      const t = (p - 0.84) / 0.16;
       targetPos.current.set(
-        0,
-        THREE.MathUtils.lerp(3.6, 1.6, t),
-        THREE.MathUtils.lerp(5.0, 10.5, t)
+        THREE.MathUtils.lerp(isMobile ? -2.2 : -3.2, 0.0, t),
+        THREE.MathUtils.lerp(0.2, 3.2, t),
+        THREE.MathUtils.lerp(isMobile ? 5.8 : 4.8, isMobile ? 12.5 : 11.2, t)
       );
-      targetLook.current.set(0, 1.0, 0);
+      targetLook.current.set(
+        THREE.MathUtils.lerp(-0.8, 0.0, t),
+        THREE.MathUtils.lerp(-1.2, 0.8, t),
+        THREE.MathUtils.lerp(0.5, 0.0, t)
+      );
     }
 
     if (!reducedMotion) {
-      camera.position.lerp(targetPos.current, 0.045);
+      camera.position.lerp(targetPos.current, 0.06);
     } else {
       camera.position.copy(targetPos.current);
     }
     camera.lookAt(targetLook.current);
+  });
+
+  return null;
+}
+
+/**
+ * Projects the active chapter's 3D focal coordinates to 2D screen percentage
+ * for SVG leader line anchoring
+ */
+function FocalPointProjector() {
+  const { camera } = useThree();
+  const tempVec = useRef(new THREE.Vector3());
+
+  useFrame(() => {
+    const activeIdx = scrollState.activeChapterIndex;
+    const focal3D = CHAPTERS[activeIdx].focalPoint3D;
+    tempVec.current.set(focal3D[0], focal3D[1], focal3D[2]);
+    tempVec.current.project(camera);
+
+    // Convert from normalized device coordinates (-1 to 1) to screen percentage (0 to 100)
+    const targetX = ((tempVec.current.x + 1) * 0.5) * 100;
+    const targetY = ((-tempVec.current.y + 1) * 0.5) * 100;
+
+    // Smooth dampening to prevent leader line flutter
+    scrollState.projectedFocalPoint.x +=
+      (targetX - scrollState.projectedFocalPoint.x) * 0.2;
+    scrollState.projectedFocalPoint.y +=
+      (targetY - scrollState.projectedFocalPoint.y) * 0.2;
   });
 
   return null;
@@ -220,44 +264,26 @@ function AetherDust() {
 
 function SceneContent({
   reducedMotion,
+  isMobile,
   onCanvasReady,
 }: {
   reducedMotion: boolean;
+  isMobile: boolean;
   onCanvasReady: () => void;
 }) {
-  const roboticsGroup = useRef<THREE.Group>(null);
-  const aerospaceGroup = useRef<THREE.Group>(null);
-  const computingGroup = useRef<THREE.Group>(null);
-  const festivalGroup = useRef<THREE.Group>(null);
-
-  // Dynamically update chapter visibility in useFrame without React re-renders
-  useFrame(() => {
-    const p = scrollState.progress;
-
-    if (roboticsGroup.current) {
-      roboticsGroup.current.visible = p >= 0.32 && p <= 0.65;
-    }
-    if (aerospaceGroup.current) {
-      aerospaceGroup.current.visible = p >= 0.55 && p <= 0.84;
-    }
-    if (computingGroup.current) {
-      computingGroup.current.visible = p >= 0.74 && p <= 0.94;
-    }
-    if (festivalGroup.current) {
-      festivalGroup.current.visible = p >= 0.88;
-    }
-  });
-
   return (
     <>
       {/* Confirms 1st and 2nd frames have rendered and warmed up shaders */}
       <FirstFrameTracker onReady={onCanvasReady} />
 
+      {/* Projects 3D focal coordinates to 2D screen coordinates */}
+      <FocalPointProjector />
+
       {/* Studio HDRI Environment for realistic metallic reflections */}
       <Environment files="/hdri/studio_small.hdr" background={false} />
 
       {/* Cinematic Studio Lighting */}
-      <ambientLight intensity={0.38} color="#151D2C" />
+      <ambientLight intensity={0.42} color="#151D2C" />
 
       {/* Warm Golden Key Light */}
       <directionalLight
@@ -284,36 +310,22 @@ function SceneContent({
         color="#3252AC"
       />
 
-      {/* Smooth Scroll Camera Choreography */}
-      <ScrollCamera reducedMotion={reducedMotion} />
+      {/* Smooth 6-Chapter Scroll Camera Choreography */}
+      <ScrollCamera reducedMotion={reducedMotion} isMobile={isMobile} />
 
       {/* Subtle Aether Stardust */}
       {!reducedMotion && <AetherDust />}
 
-      {/* Master 3D Aether Temple Engine Sculpture */}
+      {/* Master 3D Aether Temple Engine Sculpture (Dominant Foreground Hero) */}
       <PresentationControls
         global
         snap={false}
         rotation={[0, 0, 0]}
-        polar={[-Math.PI / 8, Math.PI / 8]}
-        azimuth={[-Math.PI / 4, Math.PI / 4]}
+        polar={[-Math.PI / 10, Math.PI / 10]}
+        azimuth={[-Math.PI / 6, Math.PI / 6]}
       >
-        <AetherTempleEngine position={[0, -0.2, 0]} />
+        <AetherTempleEngine position={[0, -0.2, 0]} scale={1.05} />
       </PresentationControls>
-
-      {/* Distinct 3D Chapter Environments */}
-      <group ref={roboticsGroup} visible={false}>
-        <RoboticsEnvironment active={true} opacity={1} />
-      </group>
-      <group ref={aerospaceGroup} visible={false}>
-        <AerospaceEnvironment active={true} opacity={1} />
-      </group>
-      <group ref={computingGroup} visible={false}>
-        <ComputingEnvironment active={true} opacity={1} />
-      </group>
-      <group ref={festivalGroup} visible={false}>
-        <FestivalEnvironment active={true} opacity={1} />
-      </group>
     </>
   );
 }
@@ -384,14 +396,19 @@ export const ImmersiveCanvas: React.FC<ImmersiveCanvasProps> = ({
       {/* Drag hint */}
       {isReady && !interacted && (
         <div className={styles.dragHint}>
-          ✦ Drag or touch to rotate the engine
+          ✦ Drag or touch to inspect the atlas
         </div>
       )}
 
       {/* The WebGL Canvas */}
       <Canvas
         className={styles.canvas}
-        camera={{ position: [0, 1.25, 9.2], fov: 42, near: 0.1, far: 100 }}
+        camera={{
+          position: [0, 1.8, 8.8],
+          fov: isMobile ? 52 : 42,
+          near: 0.1,
+          far: 100,
+        }}
         dpr={isMobile ? [1, 1.5] : isTablet ? [1, 1.75] : [1, 2]}
         gl={{
           antialias: true,
@@ -416,6 +433,7 @@ export const ImmersiveCanvas: React.FC<ImmersiveCanvasProps> = ({
           />
           <SceneContent
             reducedMotion={reducedMotion}
+            isMobile={isMobile}
             onCanvasReady={handleWarmupReady}
           />
         </Suspense>

@@ -19,27 +19,24 @@ test.describe('Responsive & Layout Verification Suite', () => {
       await page.setViewportSize({ width: bp.width, height: bp.height });
       await page.goto('/');
 
-      // Check title and hero
+      // Check title and pinned storytelling stage
       await expect(page).toHaveTitle(/Techfest 30/i);
-      const hero = page.locator('#hero');
-      await expect(hero).toBeVisible();
+      const stage = page.locator('#story-stage');
+      await expect(stage).toBeVisible({ timeout: 10000 });
 
-      // Check no horizontal overflow
+      // Verify no horizontal overflow
       const overflow = await page.evaluate(() => {
         return document.documentElement.scrollWidth - window.innerWidth;
       });
       expect(overflow).toBeLessThanOrEqual(1);
 
-      // Verify narrative chapters in DOM
-      const chapters = ['hero', 'enter-engine', 'worlds', 'festival', 'finale'];
-      for (const id of chapters) {
-        const section = page.locator(`#${id}`);
-        await expect(section).toBeAttached();
-      }
+      // Verify 3D canvas stage is mounted
+      const canvas = page.locator('canvas');
+      await expect(canvas).toBeVisible();
 
-      // Check primary CTA in Hero
-      const cta = page.getByRole('button', { name: /Enter the Atlas/i });
-      await expect(cta).toBeVisible();
+      // Verify primary exploration CTA
+      const cta = page.getByRole('button', { name: /Explore the Atlas/i });
+      await expect(cta).toBeVisible({ timeout: 10000 });
 
       // Test mobile menu interaction on mobile viewports (<900px)
       if (bp.width < 900) {
@@ -66,7 +63,7 @@ test.describe('Responsive & Layout Verification Suite', () => {
   test('verifies isolated 3D prototype route loads with 3D canvas', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/prototype');
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(2500);
 
     const canvas = page.locator('canvas');
     await expect(canvas).toBeVisible();
@@ -75,7 +72,7 @@ test.describe('Responsive & Layout Verification Suite', () => {
     await page.screenshot({ path: 'test-results/screenshot-prototype-e2e.png' });
   });
 
-  test('captures multi-chapter 3D camera transitions across scroll journey', async ({
+  test('verifies 6-chapter scroll progression through 600vh track and reverse scrubbing', async ({
     page,
   }) => {
     test.setTimeout(90000);
@@ -83,24 +80,55 @@ test.describe('Responsive & Layout Verification Suite', () => {
     await page.goto('/');
     await page.waitForTimeout(3000);
 
-    // 1. Chapter 01: Enter the Engine
-    await page.evaluate(() => document.getElementById('enter-engine')?.scrollIntoView());
-    await page.waitForTimeout(800);
-    await page.screenshot({ path: 'test-results/screenshot-ch01-engine.png' });
+    // Ch 00: The Discovery (initial scroll 0)
+    await expect(page.getByText('An Aetherial Renaissance')).toBeVisible();
 
-    // 2. Chapter 02: World of Engineering
-    await page.evaluate(() => document.getElementById('worlds')?.scrollIntoView());
+    // Scroll forward to Ch 01: Robotics
+    await page.evaluate(() => {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      window.scrollTo({ top: maxScroll * 0.25, behavior: 'instant' });
+    });
     await page.waitForTimeout(800);
-    await page.screenshot({ path: 'test-results/screenshot-ch02-worlds.png' });
+    await expect(page.getByText('Robotics & Kinetic Systems')).toBeVisible();
 
-    // 3. Chapter 03: The Techfest Experience
-    await page.evaluate(() => document.getElementById('festival')?.scrollIntoView());
+    // Scroll forward to Ch 02: Aerospace
+    await page.evaluate(() => {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      window.scrollTo({ top: maxScroll * 0.42, behavior: 'instant' });
+    });
     await page.waitForTimeout(800);
-    await page.screenshot({ path: 'test-results/screenshot-ch03-festival.png' });
+    await expect(page.getByText('Aerospace & Orbital Dynamics')).toBeVisible();
 
-    // 4. Finale: Enter Techfest 30
-    await page.evaluate(() => document.getElementById('finale')?.scrollIntoView());
+    // Scroll forward to Ch 03: Cognitive Computing
+    await page.evaluate(() => {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      window.scrollTo({ top: maxScroll * 0.58, behavior: 'instant' });
+    });
     await page.waitForTimeout(800);
-    await page.screenshot({ path: 'test-results/screenshot-finale.png' });
+    await expect(page.getByText('Cognitive Computing & Intelligence')).toBeVisible();
+
+    // Scroll forward to Ch 04: Sustainable Earth
+    await page.evaluate(() => {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      window.scrollTo({ top: maxScroll * 0.75, behavior: 'instant' });
+    });
+    await page.waitForTimeout(800);
+    await expect(page.getByText('Sustainable Earth Systems')).toBeVisible();
+
+    // Scroll forward to Ch 05: Finale
+    await page.evaluate(() => {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      window.scrollTo({ top: maxScroll * 0.95, behavior: 'instant' });
+    });
+    await page.waitForTimeout(800);
+    await expect(page.getByText('Enter Techfest 30')).toBeVisible();
+
+    // Reverse scrubbing test: Scroll backwards from Finale back to Ch 01 Robotics
+    await page.evaluate(() => {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      window.scrollTo({ top: maxScroll * 0.25, behavior: 'instant' });
+    });
+    await page.waitForTimeout(800);
+    await expect(page.getByText('Robotics & Kinetic Systems')).toBeVisible();
   });
 });
