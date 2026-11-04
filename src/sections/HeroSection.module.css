@@ -1,18 +1,19 @@
 .hero {
   position: relative;
-  min-height: 100vh;
+  min-height: calc(100vh - 5rem);
   display: flex;
-  align-items: center;
-  padding: 7.5rem 0 4rem 0;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 6rem 0 3rem 0;
   z-index: var(--z-content);
-  pointer-events: none; /* Allow interaction through to 3D canvas where needed */
 }
 
 .heroContainer {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: calc(100vh - 11.5rem);
+  width: 100%;
+  height: 100%;
   position: relative;
 }
 
@@ -20,8 +21,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  pointer-events: auto;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .coordinates {
@@ -45,8 +45,7 @@
 }
 
 .contentWrap {
-  max-width: 720px;
-  pointer-events: auto;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -102,9 +101,9 @@
   line-height: 1.6;
   color: var(--color-ink);
   margin-bottom: 2rem;
-  background: rgba(242, 235, 221, 0.82);
+  background: rgba(242, 235, 221, 0.85);
   backdrop-filter: blur(8px);
-  padding: 0.75rem 1rem;
+  padding: 0.85rem 1rem;
   border-left: 2px solid var(--color-vermilion);
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   max-width: 100%;
@@ -199,6 +198,7 @@
   padding: 0.65rem 1rem;
   border-radius: var(--radius-sm);
   backdrop-filter: blur(4px);
+  max-width: 100%;
 }
 
 .scheduleIcon {
@@ -223,9 +223,8 @@
   flex-direction: column;
   align-items: center;
   gap: 0.65rem;
-  pointer-events: auto;
-  align-self: center;
   margin-top: 2rem;
+  align-self: center;
 }
 
 .scrollLabel {

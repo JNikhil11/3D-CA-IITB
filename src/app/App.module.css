@@ -5,29 +5,105 @@
   color: var(--color-ink);
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
 }
 
-.canvasWrapper {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: auto;
-  z-index: var(--z-canvas-back);
-  overflow: hidden;
+/* ======================================================== */
+/* LIVING ATLAS STAGE ARCHITECTURE (Chapters 01 - 03)        */
+/* ======================================================== */
+
+.stageJourneySection {
+  position: relative;
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--gutter-mobile);
+  box-sizing: border-box;
 }
 
-@media (min-width: 1024px) {
-  .canvasWrapper {
-    /* Offset canvas to the right half in desktop layout so hero text is crisp and unobstructed */
-    left: 20%;
-    width: 80vw;
+@media (min-width: 640px) {
+  .stageJourneySection {
+    padding: 0 var(--gutter-tablet);
   }
 }
 
-.mainContent {
+@media (min-width: 1024px) {
+  .stageJourneySection {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    column-gap: 2rem;
+    align-items: start;
+    padding: 0 var(--gutter-tablet);
+    overflow-x: clip;
+  }
+}
+
+@media (min-width: 1280px) {
+  .stageJourneySection {
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+    column-gap: 2.5rem;
+    padding: 0 var(--gutter-desktop);
+  }
+}
+
+/* Sticky 3D Stage on Desktop */
+.desktopStickyCanvas {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .desktopStickyCanvas {
+    display: block;
+    position: sticky;
+    top: 5rem;
+    height: calc(100vh - 6rem);
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    z-index: var(--z-canvas-interactive);
+  }
+}
+
+/* Mobile 3D Stage (Prominent top/center hero stage) */
+.mobileCanvasStage {
+  display: block;
+  width: 100%;
+  height: clamp(340px, 48vh, 460px);
+  position: relative;
+  z-index: var(--z-canvas-interactive);
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: var(--radius-sm);
+  background: radial-gradient(
+    circle at center,
+    rgba(251, 247, 238, 0.95) 0%,
+    rgba(242, 235, 221, 0.6) 70%,
+    transparent 100%
+  );
+  border: 1px solid var(--color-card-border);
+  box-shadow: inset 0 0 40px rgba(217, 175, 86, 0.08);
+}
+
+@media (min-width: 1024px) {
+  .mobileCanvasStage {
+    display: none;
+  }
+}
+
+.editorialColumn {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Remaining Chapters Container (04, 05, 06, 07) */
+.independentChapters {
   position: relative;
   z-index: var(--z-content);
-  flex-grow: 1;
+  width: 100%;
+  box-sizing: border-box;
 }

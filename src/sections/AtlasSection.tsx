@@ -15,7 +15,7 @@ export const AtlasSection: React.FC<AtlasSectionProps> = ({
 
   return (
     <section className={styles.atlas} id="atlas" aria-label="Chapter 03: The Atlas of Ideas">
-      <div className={`container ${styles.atlasContainer}`}>
+      <div className={styles.atlasContainer}>
         {/* Section Eyebrow & Title */}
         <div className={styles.header}>
           <div className="calibration-badge">CHAPTER 03 · ATLAS OF IDEAS</div>

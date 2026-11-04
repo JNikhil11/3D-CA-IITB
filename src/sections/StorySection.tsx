@@ -4,7 +4,7 @@ import styles from './StorySection.module.css';
 export const StorySection: React.FC = () => {
   return (
     <section className={styles.story} id="story" aria-label="Chapter 02: The Revival">
-      <div className={`container ${styles.storyContainer}`}>
+      <div className={styles.storyContainer}>
         {/* Section Header */}
         <div className={styles.sectionHeader}>
           <div className="calibration-badge">CHAPTER 02 · THE REVIVAL</div>

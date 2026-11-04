@@ -4,12 +4,13 @@ import styles from './HeroSection.module.css';
 
 interface HeroSectionProps {
   onExploreClick: () => void;
+  mobile3DStage?: React.ReactNode;
 }
 
-export const HeroSection: React.FC<HeroSectionProps> = ({ onExploreClick }) => {
+export const HeroSection: React.FC<HeroSectionProps> = ({ onExploreClick, mobile3DStage }) => {
   return (
     <section className={styles.hero} id="hero" aria-label="Prologue: The Living Atlas">
-      <div className={`container ${styles.heroContainer}`}>
+      <div className={styles.heroContainer}>
         {/* Editorial Marginalia / Metadata Badge */}
         <div className={styles.metaRow}>
           <div className="calibration-badge">
@@ -32,6 +33,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onExploreClick }) => {
             <span className={styles.headlineSub}>THE LIVING ATLAS</span>
             <span className={styles.headlineMain}>{TECHFEST_CONFIG.theme}</span>
           </h1>
+
+          {/* Dedicated Mobile 3D Interactive Stage Slot */}
+          {mobile3DStage}
 
           <p className={styles.narrativeLead}>
             {TECHFEST_CONFIG.narrativeLead}
