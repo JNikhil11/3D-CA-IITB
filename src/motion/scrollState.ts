@@ -1,73 +1,75 @@
 /**
- * scrollState.ts — Authoritative Scrollytelling State Manager
+ * scrollState.ts — Authoritative 5-World Scrollytelling State Manager
  *
- * Single authoritative source of truth for the master pinned scrollytelling timeline.
- * Synchronizes:
- * - GSAP ScrollTrigger scrub progress [0.0, 1.0]
- * - 6 distinct chapter ranges
+ * Coordinates:
+ * - GSAP ScrollTrigger scrub progress [0.0, 1.0] across 5 monumental worlds
  * - R3F camera positions & lookAt targets
  * - Screen-space projected focal point for dynamic SVG leader lines
- * - Zero React DOM re-renders on scroll ticks
+ * - Zero React DOM re-renders on high-frequency scroll ticks
  */
 
-export interface ChapterDef {
+export interface WorldDef {
   id: string;
   number: string;
   title: string;
+  subtitle: string;
   range: [number, number]; // [startProgress, endProgress]
   focalPoint3D: [number, number, number];
 }
 
-export const CHAPTERS: ChapterDef[] = [
+export const WORLDS: WorldDef[] = [
   {
-    id: 'discovery',
-    number: '00',
-    title: 'The Discovery',
-    range: [0.0, 0.16],
+    id: 'observatory',
+    number: '01',
+    title: 'The Grand Observatory',
+    subtitle: 'Celestial Vault & Astrolabe Rotunda',
+    range: [0.0, 0.2],
     focalPoint3D: [0.0, 0.5, 0.0],
   },
   {
-    id: 'robotics',
-    number: '01',
-    title: 'Robotics & Kinetic Systems',
-    range: [0.16, 0.34],
-    focalPoint3D: [-0.4, -0.8, 0.3],
-  },
-  {
-    id: 'aerospace',
+    id: 'subterranean-engine',
     number: '02',
-    title: 'Aerospace & Orbital Dynamics',
-    range: [0.34, 0.5],
-    focalPoint3D: [1.3, 1.4, -0.2],
+    title: 'The Subterranean Engine',
+    subtitle: 'Kinematic Machine & Control Deck',
+    range: [0.2, 0.4],
+    focalPoint3D: [0.0, -1.2, 1.4],
   },
   {
-    id: 'computing',
+    id: 'engineering-worlds',
     number: '03',
-    title: 'Cognitive Computing & Intelligence',
-    range: [0.5, 0.68],
-    focalPoint3D: [0.0, 0.55, 0.0],
+    title: 'Engineering Worlds',
+    subtitle: 'Robotics, Aerospace, Computing & Earth',
+    range: [0.4, 0.65],
+    focalPoint3D: [1.2, 1.2, 0.0],
   },
   {
-    id: 'sustainability',
+    id: 'festival-experience',
     number: '04',
-    title: 'Sustainable Earth Systems',
-    range: [0.68, 0.84],
-    focalPoint3D: [-0.8, -1.2, 0.5],
+    title: 'The Techfest Experience',
+    subtitle: 'Technoholix Lasers & Ozone Arena',
+    range: [0.65, 0.85],
+    focalPoint3D: [-1.4, 0.4, 0.0],
   },
   {
-    id: 'finale',
+    id: 'final-destination',
     number: '05',
-    title: 'Enter Techfest 30',
-    range: [0.84, 1.0],
-    focalPoint3D: [0.0, 1.4, 0.0],
+    title: 'The Final Destination',
+    subtitle: 'Sky Beacon & Registration Portal',
+    range: [0.85, 1.0],
+    focalPoint3D: [0.0, 1.8, 0.0],
   },
 ];
+
+export type ChapterDef = WorldDef;
+export const CHAPTERS = WORLDS;
+export const getActiveChapterIndex = getActiveWorldIndex;
 
 export interface ScrollState {
   progress: number;
   scrollY: number;
   maxScroll: number;
   velocity: number;
+  activeWorldIndex: number;
   activeChapterIndex: number;
   projectedFocalPoint: { x: number; y: number };
 }
@@ -77,18 +79,26 @@ export const scrollState: ScrollState = {
   scrollY: 0,
   maxScroll: 1,
   velocity: 0,
+  activeWorldIndex: 0,
   activeChapterIndex: 0,
   projectedFocalPoint: { x: 50, y: 50 },
 };
 
-export function getActiveChapterIndex(prog: number): number {
-  for (let i = 0; i < CHAPTERS.length; i++) {
-    const [start, end] = CHAPTERS[i].range;
-    if (prog >= start && (prog < end || (i === CHAPTERS.length - 1 && prog <= end))) {
+export function getActiveWorldIndex(prog: number): number {
+  for (let i = 0; i < WORLDS.length; i++) {
+    const [start, end] = WORLDS[i].range;
+    if (prog >= start && (prog < end || (i === WORLDS.length - 1 && prog <= end))) {
       return i;
     }
   }
   return 0;
+}
+
+export function getWorldProgress(prog: number, worldIndex: number): number {
+  const [start, end] = WORLDS[worldIndex].range;
+  if (prog < start) return 0;
+  if (prog > end) return 1;
+  return (prog - start) / (end - start);
 }
 
 type ScrollListener = (state: Readonly<ScrollState>) => void;
@@ -98,7 +108,8 @@ export function setScrollProgress(prog: number, vel = 0): void {
   const clamped = Math.min(1, Math.max(0, prog));
   scrollState.velocity = vel || clamped - scrollState.progress;
   scrollState.progress = clamped;
-  scrollState.activeChapterIndex = getActiveChapterIndex(clamped);
+  scrollState.activeWorldIndex = getActiveWorldIndex(clamped);
+  scrollState.activeChapterIndex = scrollState.activeWorldIndex;
 
   listeners.forEach((fn) => {
     try {

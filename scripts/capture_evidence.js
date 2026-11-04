@@ -6,90 +6,111 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const evidenceDir = path.resolve(__dirname, '../QA/evidence');
 
 async function run() {
+  console.log('Launching Playwright Chromium for 5-World Evidence Capture...');
   const browser = await chromium.launch({ headless: true });
 
-  // 1. Capture Desktop 1440x900 Journey Across All 6 Chapters
-  const desktop = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-  await desktop.goto('http://localhost:3000/');
-  await desktop.waitForTimeout(3500); // Wait for 1.7s curtain reveal
-  await desktop.evaluate(() => document.fonts.ready);
+  // 1. Capture Preloader Screen
+  const page1 = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page1.goto('http://localhost:3000/');
+  await page1.waitForTimeout(600); // During 1.7s minimum gate
+  await page1.screenshot({
+    path: path.join(evidenceDir, '01_preloader_1440x900.png'),
+    timeout: 60000,
+  });
+  console.log('✓ Captured 01_preloader_1440x900.png');
+  await page1.close();
 
-  // Ch 00: The Discovery
-  await desktop.screenshot({ path: path.join(evidenceDir, 'ch00_discovery_1440x900.png') });
+  // 2. Capture Hero & 5 Worlds on Desktop (1440x900)
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page.goto('http://localhost:3000/');
+  // Wait for curtain reveal & WebGL shader compilation
+  await page.waitForTimeout(5000);
 
   // Helper to scroll to normalized progress
-  const scrollToProgress = async (prog) => {
-    await desktop.evaluate((p) => {
+  const scrollToProg = async (p) => {
+    await page.evaluate((prog) => {
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      window.scrollTo({ top: maxScroll * p, behavior: 'instant' });
-    }, prog);
-    await desktop.waitForTimeout(900);
+      window.scrollTo({ top: maxScroll * prog, behavior: 'instant' });
+    }, p);
+    await page.waitForTimeout(1500);
   };
 
-  // Ch 01: Robotics (p = 0.25)
-  await scrollToProgress(0.25);
-  await desktop.screenshot({ path: path.join(evidenceDir, 'ch01_robotics_1440x900.png') });
+  // World 01: The Grand Observatory (p = 0.08)
+  await scrollToProg(0.08);
+  await page.screenshot({
+    path: path.join(evidenceDir, 'world01_observatory_1440x900.png'),
+    timeout: 60000,
+  });
+  console.log('✓ Captured World 01: The Grand Observatory');
 
-  // Ch 02: Aerospace (p = 0.42)
-  await scrollToProgress(0.42);
-  await desktop.screenshot({ path: path.join(evidenceDir, 'ch02_aerospace_1440x900.png') });
+  // World 02: The Subterranean Engine (p = 0.30)
+  await scrollToProg(0.30);
+  await page.screenshot({
+    path: path.join(evidenceDir, 'world02_subterranean_1440x900.png'),
+    timeout: 60000,
+  });
+  console.log('✓ Captured World 02: The Subterranean Engine');
 
-  // Ch 03: Cognitive Computing (p = 0.58)
-  await scrollToProgress(0.58);
-  await desktop.screenshot({ path: path.join(evidenceDir, 'ch03_computing_1440x900.png') });
+  // World 03: Engineering Worlds (p = 0.52)
+  await scrollToProg(0.52);
+  await page.screenshot({
+    path: path.join(evidenceDir, 'world03_engineering_1440x900.png'),
+    timeout: 60000,
+  });
+  console.log('✓ Captured World 03: Engineering Worlds');
 
-  // Ch 04: Sustainable Earth Systems (p = 0.75)
-  await scrollToProgress(0.75);
-  await desktop.screenshot({ path: path.join(evidenceDir, 'ch04_sustainability_1440x900.png') });
+  // World 04: The Techfest Experience (p = 0.74)
+  await scrollToProg(0.74);
+  await page.screenshot({
+    path: path.join(evidenceDir, 'world04_festival_1440x900.png'),
+    timeout: 60000,
+  });
+  console.log('✓ Captured World 04: The Techfest Experience');
 
-  // Ch 05: Enter Techfest 30 Grand Finale (p = 0.95)
-  await scrollToProgress(0.95);
-  await desktop.screenshot({ path: path.join(evidenceDir, 'ch05_finale_1440x900.png') });
+  // World 05: The Final Destination (p = 0.95)
+  await scrollToProg(0.95);
+  await page.screenshot({
+    path: path.join(evidenceDir, 'world05_finale_1440x900.png'),
+    timeout: 60000,
+  });
+  console.log('✓ Captured World 05: The Final Destination');
+  await page.close();
 
-  // Reverse Scrubbing Test: Reverse from Ch 05 back to Ch 01 Robotics
-  await scrollToProgress(0.25);
-  await desktop.screenshot({ path: path.join(evidenceDir, 'reverse_scrub_to_ch01_1440x900.png') });
-  await desktop.close();
-
-  // 2. Capture Mobile 390x844 Layout
+  // 3. Mobile (390x844)
   const mobile = await browser.newPage({ viewport: { width: 390, height: 844 } });
   await mobile.goto('http://localhost:3000/');
-  await mobile.waitForTimeout(3500);
-  await mobile.evaluate(() => document.fonts.ready);
+  await mobile.waitForTimeout(5000);
 
-  // Mobile Ch 00
-  await mobile.screenshot({ path: path.join(evidenceDir, 'mobile_ch00_390x844.png') });
-
-  // Mobile Ch 01
+  // Mobile World 01
   await mobile.evaluate(() => {
     const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-    window.scrollTo({ top: maxScroll * 0.25, behavior: 'instant' });
+    window.scrollTo({ top: maxScroll * 0.08, behavior: 'instant' });
   });
-  await mobile.waitForTimeout(900);
-  await mobile.screenshot({ path: path.join(evidenceDir, 'mobile_ch01_390x844.png') });
-
-  // Mobile Ch 03
-  await mobile.evaluate(() => {
-    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-    window.scrollTo({ top: maxScroll * 0.58, behavior: 'instant' });
+  await mobile.waitForTimeout(1500);
+  await mobile.screenshot({
+    path: path.join(evidenceDir, 'mobile_world01_390x844.png'),
+    timeout: 60000,
   });
-  await mobile.waitForTimeout(900);
-  await mobile.screenshot({ path: path.join(evidenceDir, 'mobile_ch03_390x844.png') });
+  console.log('✓ Captured Mobile World 01');
 
-  // Mobile Ch 05
+  // Mobile World 05
   await mobile.evaluate(() => {
     const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
     window.scrollTo({ top: maxScroll * 0.95, behavior: 'instant' });
   });
-  await mobile.waitForTimeout(900);
-  await mobile.screenshot({ path: path.join(evidenceDir, 'mobile_ch05_390x844.png') });
+  await mobile.waitForTimeout(1500);
+  await mobile.screenshot({
+    path: path.join(evidenceDir, 'mobile_world05_390x844.png'),
+    timeout: 60000,
+  });
+  console.log('✓ Captured Mobile World 05');
   await mobile.close();
 
   await browser.close();
-  console.log('All scrollytelling QA evidence screenshots captured successfully.');
+  console.log('★ All 5-world scrollytelling QA evidence screenshots captured successfully.');
 }
 
 run().catch((err) => {
-  console.error(err);
+  console.error('Error during evidence capture:', err);
   process.exit(1);
 });

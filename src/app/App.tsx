@@ -1,12 +1,15 @@
 /**
- * App.tsx — The Living Atlas Master Pinned Scrollytelling Architecture
+ * App.tsx — The Living Atlas Master 5-World Scrollytelling Architecture
  *
- * Architecture:
- * 1. Pinned 600vh Storytelling Stage driven by authoritative GSAP ScrollTrigger scrub
+ * Implements:
+ * 1. Pinned 500vh Storytelling Stage driven by authoritative GSAP ScrollTrigger scrub
  * 2. The Atlas as Hero & Foreground commanding 75-85% of the viewport
- * 3. 6 synchronised chapters: Discovery, Robotics, Aerospace, Computing, Sustainability, Finale
- * 4. Zero rectangular card boxes: pure negative space editorial typography with SVG leader lines
- * 5. Full backwards scrub capability with natural reverse animations
+ * 3. 5 synchronised 3D Worlds: Grand Observatory, Subterranean Engine, Engineering Worlds,
+ *    Festival Experience, Final Destination
+ * 4. Ornate decorative brass filigree information frames (DecorativeGoldFrame)
+ * 5. Dynamic SVG leader lines tracking projected 3D focal coordinates
+ * 6. Interactive Vertical Nav Rail with direct click-to-scrub navigation
+ * 7. Cinematic 1.7-second reveal curtain eliminating all FOUC
  */
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
@@ -15,22 +18,31 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { InitialRevealCurtain } from '../components/InitialRevealCurtain';
+import { VerticalNavRail } from '../components/VerticalNavRail';
+import { LeaderLine } from '../components/LeaderLine';
 import { ImmersiveCanvas } from '../scene/ImmersiveCanvas';
-import { DiscoveryChapter } from '../sections/chapters/DiscoveryChapter';
-import { RoboticsChapter } from '../sections/chapters/RoboticsChapter';
-import { AerospaceChapter } from '../sections/chapters/AerospaceChapter';
-import { ComputingChapter } from '../sections/chapters/ComputingChapter';
-import { SustainabilityChapter } from '../sections/chapters/SustainabilityChapter';
-import { FinaleChapter } from '../sections/chapters/FinaleChapter';
+import { ObservatoryWorldFrame } from '../sections/worlds/ObservatoryWorldFrame';
+import { SubterraneanWorldFrame } from '../sections/worlds/SubterraneanWorldFrame';
+import { EngineeringWorldFrame } from '../sections/worlds/EngineeringWorldFrame';
+import { FestivalWorldFrame } from '../sections/worlds/FestivalWorldFrame';
+import { FinalDestinationWorldFrame } from '../sections/worlds/FinalDestinationWorldFrame';
 import {
   setScrollProgress,
-  getActiveChapterIndex,
-  CHAPTERS,
+  getActiveWorldIndex,
+  WORLDS,
 } from '../motion/scrollState';
 import styles from './App.module.css';
 
 // Register GSAP ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
+
+const LEADER_ANCHORS = [
+  { x: 28, y: 50 }, // World 01 (Left Frame)
+  { x: 72, y: 45 }, // World 02 (Right Frame)
+  { x: 28, y: 50 }, // World 03 (Left Frame)
+  { x: 72, y: 50 }, // World 04 (Right Frame)
+  { x: 50, y: 32 }, // World 05 (Center Frame)
+];
 
 export const App: React.FC = () => {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -60,8 +72,8 @@ export const App: React.FC = () => {
           progressBarRef.current.style.width = `${(prog * 100).toFixed(1)}%`;
         }
 
-        // Update active chapter index
-        const idx = getActiveChapterIndex(prog);
+        // Update active world index
+        const idx = getActiveWorldIndex(prog);
         setActiveIndex(idx);
 
         if (prog > 0.02) {
@@ -94,9 +106,9 @@ export const App: React.FC = () => {
     setLoadProgress(prog);
   }, []);
 
-  // Jump to specific chapter on dot click
-  const handleChapterClick = (index: number) => {
-    const targetProg = CHAPTERS[index].range[0] + 0.01;
+  // Jump to specific world on dot or rail click
+  const handleWorldClick = (index: number) => {
+    const targetProg = WORLDS[index].range[0] + 0.01;
     const maxScroll =
       document.documentElement.scrollHeight - window.innerHeight;
     window.scrollTo({
@@ -131,21 +143,26 @@ export const App: React.FC = () => {
         aria-hidden="true"
       />
 
+      {/* Persistent Left-Edge Vertical World Navigation Rail */}
+      <VerticalNavRail onSelectWorld={handleWorldClick} />
+
       {/* Right-edge chapter navigation dots */}
-      <nav className={styles.chapterNav} aria-label="Chapter Navigation">
-        {CHAPTERS.map((ch, idx) => (
+      <nav className={styles.chapterNav} aria-label="World Navigation">
+        {WORLDS.map((w, idx) => (
           <button
-            key={ch.id}
+            key={w.id}
             type="button"
-            className={`${styles.chapterDot} ${activeIndex === idx ? styles.chapterDotActive : ''}`}
-            onClick={() => handleChapterClick(idx)}
-            aria-label={`Jump to Chapter ${ch.number}: ${ch.title}`}
+            className={`${styles.chapterDot} ${
+              activeIndex === idx ? styles.chapterDotActive : ''
+            }`}
+            onClick={() => handleWorldClick(idx)}
+            aria-label={`Jump to World ${w.number}: ${w.title}`}
             aria-current={activeIndex === idx ? 'step' : undefined}
           />
         ))}
       </nav>
 
-      {/* 600vh Native Scroll Track */}
+      {/* 500vh Native Scroll Track */}
       <div ref={trackRef} className={styles.storyTrack} id="story-track">
         {/* Pinned 100vh Storytelling Viewport Stage */}
         <main id="story-stage" className={styles.pinnedStage}>
@@ -157,28 +174,32 @@ export const App: React.FC = () => {
             />
           </div>
 
-          {/* Synchronized Negative Space Editorial Chapters Overlay */}
+          {/* Dynamic SVG Leader Line connecting Active Frame to 3D Focal Point */}
+          <LeaderLine
+            sourceX={LEADER_ANCHORS[activeIndex]?.x ?? 30}
+            sourceY={LEADER_ANCHORS[activeIndex]?.y ?? 50}
+            visible={isReady && activeIndex < 5}
+          />
+
+          {/* Synchronized Ornate Gold Information Frames Overlay */}
           <div className={styles.editorialStage}>
-            {/* Chapter 00 — The Discovery */}
-            <DiscoveryChapter
+            {/* World 01 — The Grand Observatory */}
+            <ObservatoryWorldFrame
               active={activeIndex === 0}
-              onExploreClick={() => handleChapterClick(1)}
+              onExploreClick={() => handleWorldClick(1)}
             />
 
-            {/* Chapter 01 — Robotics & Kinetic Systems */}
-            <RoboticsChapter active={activeIndex === 1} />
+            {/* World 02 — The Subterranean Engine */}
+            <SubterraneanWorldFrame active={activeIndex === 1} />
 
-            {/* Chapter 02 — Aerospace & Orbital Dynamics */}
-            <AerospaceChapter active={activeIndex === 2} />
+            {/* World 03 — Engineering Worlds */}
+            <EngineeringWorldFrame active={activeIndex === 2} />
 
-            {/* Chapter 03 — Cognitive Computing & Intelligence */}
-            <ComputingChapter active={activeIndex === 3} />
+            {/* World 04 — The Techfest Experience */}
+            <FestivalWorldFrame active={activeIndex === 3} />
 
-            {/* Chapter 04 — Sustainable Earth Systems */}
-            <SustainabilityChapter active={activeIndex === 4} />
-
-            {/* Chapter 05 — Enter Techfest 30 Grand Finale */}
-            <FinaleChapter active={activeIndex === 5} />
+            {/* World 05 — The Final Destination */}
+            <FinalDestinationWorldFrame active={activeIndex === 4} />
           </div>
         </main>
       </div>

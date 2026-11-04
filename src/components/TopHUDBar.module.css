@@ -1,0 +1,151 @@
+.topHUD {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3.5rem;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 clamp(1rem, 3vw, 2.5rem);
+  background: linear-gradient(180deg, rgba(3, 5, 10, 0.92) 0%, rgba(3, 5, 10, 0.4) 85%, transparent 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.18);
+  pointer-events: auto;
+}
+
+.brandLockup {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.brandInsignia {
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1px solid #d4af37;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  color: #f5d77f;
+  background: rgba(212, 175, 55, 0.1);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.25);
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+}
+
+.brandTitle {
+  font-family: var(--font-display, 'Instrument Serif', Georgia, serif);
+  font-size: 1.15rem;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: #f5d77f;
+  line-height: 1.1;
+}
+
+.brandSub {
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #8899aa;
+}
+
+/* Center Live World Tracker */
+.worldTracker {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  color: #d4af37;
+  text-transform: uppercase;
+  background: rgba(8, 12, 20, 0.75);
+  padding: 0.35rem 0.9rem;
+  border-radius: 20px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+}
+
+.liveDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: pulseDot 2s infinite ease-in-out;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+/* Right Action Controls */
+.hudActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.hudButton {
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #f5d77f;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  padding: 0.4rem 0.85rem;
+  border-radius: 3px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.hudButton:hover {
+  background: rgba(212, 175, 55, 0.25);
+  border-color: #f5d77f;
+  box-shadow: 0 0 12px rgba(245, 215, 127, 0.3);
+  color: #ffffff;
+}
+
+.caBadge {
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 0.58rem;
+  letter-spacing: 0.15em;
+  color: #718096;
+  text-transform: uppercase;
+  border: 1px solid rgba(113, 128, 150, 0.3);
+  padding: 0.3rem 0.55rem;
+  border-radius: 2px;
+}
+
+@media (max-width: 900px) {
+  .worldTracker {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .caBadge {
+    display: none;
+  }
+  .brandSub {
+    display: none;
+  }
+}

@@ -25,11 +25,16 @@ import {
 } from '@react-three/drei';
 import * as THREE from 'three';
 import { AetherTempleEngine } from './sculpture/AetherTempleEngine';
+import { GrandObservatoryEnvironment } from './worlds/GrandObservatoryEnvironment';
+import { SubterraneanEngineEnvironment } from './worlds/SubterraneanEngineEnvironment';
+import { EngineeringWorldsEnvironment } from './worlds/EngineeringWorldsEnvironment';
+import { FestivalExperienceEnvironment } from './worlds/FestivalExperienceEnvironment';
+import { FinalDestinationEnvironment } from './worlds/FinalDestinationEnvironment';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { useWindowSize } from '../hooks/useWindowSize';
 import {
   scrollState,
-  CHAPTERS,
+  WORLDS,
 } from '../motion/scrollState';
 import styles from './ImmersiveCanvas.module.css';
 
@@ -91,7 +96,7 @@ function FirstFrameTracker({ onReady }: { onReady: () => void }) {
 }
 
 /**
- * Continuous 6-Chapter Camera Choreography through the Atlas
+ * Continuous 5-World Camera Choreography through the Atlas
  */
 function ScrollCamera({
   reducedMotion,
@@ -107,79 +112,71 @@ function ScrollCamera({
   useFrame(() => {
     const p = scrollState.progress;
 
-    if (p < 0.16) {
-      // Chapter 00: The Discovery — Monumental establishing wide view
-      const t = p / 0.16;
+    if (p < 0.2) {
+      // World 01: The Grand Observatory [0.0, 0.20]
+      // Monumental establishing view of astrolabe & celestial dome
+      const t = p / 0.2;
       targetPos.current.set(
-        THREE.MathUtils.lerp(0, 0.2, t),
-        THREE.MathUtils.lerp(isMobile ? 2.2 : 1.8, 1.6, t),
-        THREE.MathUtils.lerp(isMobile ? 10.5 : 8.8, 8.4, t)
+        THREE.MathUtils.lerp(0, 0.3, t),
+        THREE.MathUtils.lerp(isMobile ? 2.2 : 1.8, 1.5, t),
+        THREE.MathUtils.lerp(isMobile ? 10.5 : 8.8, 7.8, t)
       );
       targetLook.current.set(0, 0.5, 0);
-    } else if (p < 0.34) {
-      // Chapter 01: Robotics — Swoop to lower kinematic drive & gear train
-      const t = (p - 0.16) / 0.18;
+    } else if (p < 0.4) {
+      // World 02: The Subterranean Engine [0.20, 0.40]
+      // Camera swoops down into the industrial vault, close to catwalk and console
+      const t = (p - 0.2) / 0.2;
       targetPos.current.set(
-        THREE.MathUtils.lerp(0.2, isMobile ? -1.4 : -2.2, t),
-        THREE.MathUtils.lerp(1.6, -0.6, t),
-        THREE.MathUtils.lerp(8.4, isMobile ? 4.5 : 3.6, t)
+        THREE.MathUtils.lerp(0.3, 0.0, t),
+        THREE.MathUtils.lerp(1.5, -0.6, t),
+        THREE.MathUtils.lerp(7.8, isMobile ? 4.9 : 4.4, t)
       );
       targetLook.current.set(
-        THREE.MathUtils.lerp(0, -0.4, t),
-        THREE.MathUtils.lerp(0.5, -0.8, t),
-        THREE.MathUtils.lerp(0, 0.3, t)
+        THREE.MathUtils.lerp(0, 0.0, t),
+        THREE.MathUtils.lerp(0.5, -1.0, t),
+        THREE.MathUtils.lerp(0, 2.8, t)
       );
-    } else if (p < 0.5) {
-      // Chapter 02: Aerospace — Sweeping transit along 40° observation yoke & satellite
-      const t = (p - 0.34) / 0.16;
+    } else if (p < 0.65) {
+      // World 03: Engineering Worlds [0.40, 0.65]
+      // Sweeping traversal orbiting around the 4 engineering quadrants
+      const t = (p - 0.4) / 0.25;
       targetPos.current.set(
-        THREE.MathUtils.lerp(isMobile ? -1.4 : -2.2, isMobile ? 2.2 : 3.4, t),
-        THREE.MathUtils.lerp(-0.6, 2.2, t),
-        THREE.MathUtils.lerp(isMobile ? 4.5 : 3.6, isMobile ? 5.2 : 4.2, t)
+        THREE.MathUtils.lerp(0.0, isMobile ? 2.0 : 2.8, t),
+        THREE.MathUtils.lerp(-0.6, 1.4, t),
+        THREE.MathUtils.lerp(isMobile ? 4.9 : 4.4, isMobile ? 6.0 : 5.2, t)
       );
       targetLook.current.set(
-        THREE.MathUtils.lerp(-0.4, 1.3, t),
-        THREE.MathUtils.lerp(-0.8, 1.4, t),
-        THREE.MathUtils.lerp(0.3, -0.2, t)
+        THREE.MathUtils.lerp(0.0, 1.0, t),
+        THREE.MathUtils.lerp(-1.0, 0.5, t),
+        THREE.MathUtils.lerp(2.8, 0.0, t)
       );
-    } else if (p < 0.68) {
-      // Chapter 03: Cognitive Computing — Macro dive directly into incandescent core & neural lattice
-      const t = (p - 0.5) / 0.18;
+    } else if (p < 0.85) {
+      // World 04: The Techfest Experience [0.65, 0.85]
+      // Sweeping dynamic view across Technoholix laser arrays & Ozone arena
+      const t = (p - 0.65) / 0.2;
       targetPos.current.set(
-        THREE.MathUtils.lerp(isMobile ? 2.2 : 3.4, 0.0, t),
-        THREE.MathUtils.lerp(2.2, 0.55, t),
-        THREE.MathUtils.lerp(isMobile ? 5.2 : 4.2, isMobile ? 2.8 : 2.1, t)
+        THREE.MathUtils.lerp(isMobile ? 2.0 : 2.8, isMobile ? -1.8 : -2.4, t),
+        THREE.MathUtils.lerp(1.4, 1.6, t),
+        THREE.MathUtils.lerp(isMobile ? 6.0 : 5.2, isMobile ? 7.0 : 6.2, t)
       );
       targetLook.current.set(
-        THREE.MathUtils.lerp(1.3, 0.0, t),
-        THREE.MathUtils.lerp(1.4, 0.55, t),
-        THREE.MathUtils.lerp(-0.2, -0.5, t)
-      );
-    } else if (p < 0.84) {
-      // Chapter 04: Sustainable Earth — Sweep across stepped obsidian dais & capacitor pylons
-      const t = (p - 0.68) / 0.16;
-      targetPos.current.set(
-        THREE.MathUtils.lerp(0.0, isMobile ? -2.2 : -3.2, t),
-        THREE.MathUtils.lerp(0.55, 0.2, t),
-        THREE.MathUtils.lerp(isMobile ? 2.8 : 2.1, isMobile ? 5.8 : 4.8, t)
-      );
-      targetLook.current.set(
-        THREE.MathUtils.lerp(0.0, -0.8, t),
-        THREE.MathUtils.lerp(0.55, -1.2, t),
-        THREE.MathUtils.lerp(-0.5, 0.5, t)
+        THREE.MathUtils.lerp(1.0, -0.8, t),
+        THREE.MathUtils.lerp(0.5, 0.2, t),
+        THREE.MathUtils.lerp(0.0, -1.0, t)
       );
     } else {
-      // Chapter 05: Enter Techfest 30 Grand Finale — Grand panoramic elevation pullback
-      const t = (p - 0.84) / 0.16;
+      // World 05: The Final Destination [0.85, 1.00]
+      // Grand panoramic elevation pullback into deep space revealing the beacon
+      const t = (p - 0.85) / 0.15;
       targetPos.current.set(
-        THREE.MathUtils.lerp(isMobile ? -2.2 : -3.2, 0.0, t),
-        THREE.MathUtils.lerp(0.2, 3.2, t),
-        THREE.MathUtils.lerp(isMobile ? 5.8 : 4.8, isMobile ? 12.5 : 11.2, t)
+        THREE.MathUtils.lerp(isMobile ? -1.8 : -2.4, 0.0, t),
+        THREE.MathUtils.lerp(1.6, 3.8, t),
+        THREE.MathUtils.lerp(isMobile ? 7.0 : 6.2, isMobile ? 12.8 : 11.5, t)
       );
       targetLook.current.set(
         THREE.MathUtils.lerp(-0.8, 0.0, t),
-        THREE.MathUtils.lerp(-1.2, 0.8, t),
-        THREE.MathUtils.lerp(0.5, 0.0, t)
+        THREE.MathUtils.lerp(0.2, 1.2, t),
+        THREE.MathUtils.lerp(-1.0, 0.0, t)
       );
     }
 
@@ -195,7 +192,7 @@ function ScrollCamera({
 }
 
 /**
- * Projects the active chapter's 3D focal coordinates to 2D screen percentage
+ * Projects the active world's 3D focal coordinates to 2D screen percentage
  * for SVG leader line anchoring
  */
 function FocalPointProjector() {
@@ -203,8 +200,8 @@ function FocalPointProjector() {
   const tempVec = useRef(new THREE.Vector3());
 
   useFrame(() => {
-    const activeIdx = scrollState.activeChapterIndex;
-    const focal3D = CHAPTERS[activeIdx].focalPoint3D;
+    const activeIdx = scrollState.activeWorldIndex;
+    const focal3D = WORLDS[activeIdx].focalPoint3D;
     tempVec.current.set(focal3D[0], focal3D[1], focal3D[2]);
     tempVec.current.project(camera);
 
@@ -262,6 +259,45 @@ function AetherDust() {
   );
 }
 
+function WorldsManager() {
+  const [worldStates, setWorldStates] = useState({
+    w1: true,
+    w2: false,
+    w3: false,
+    w4: false,
+    w5: false,
+  });
+
+  useFrame(() => {
+    const p = scrollState.progress;
+    const w1 = p < 0.24;
+    const w2 = p >= 0.16 && p < 0.44;
+    const w3 = p >= 0.36 && p < 0.68;
+    const w4 = p >= 0.62 && p < 0.88;
+    const w5 = p >= 0.82;
+
+    if (
+      w1 !== worldStates.w1 ||
+      w2 !== worldStates.w2 ||
+      w3 !== worldStates.w3 ||
+      w4 !== worldStates.w4 ||
+      w5 !== worldStates.w5
+    ) {
+      setWorldStates({ w1, w2, w3, w4, w5 });
+    }
+  });
+
+  return (
+    <>
+      <GrandObservatoryEnvironment active={worldStates.w1} />
+      <SubterraneanEngineEnvironment active={worldStates.w2} />
+      <EngineeringWorldsEnvironment active={worldStates.w3} />
+      <FestivalExperienceEnvironment active={worldStates.w4} />
+      <FinalDestinationEnvironment active={worldStates.w5} />
+    </>
+  );
+}
+
 function SceneContent({
   reducedMotion,
   isMobile,
@@ -310,11 +346,14 @@ function SceneContent({
         color="#3252AC"
       />
 
-      {/* Smooth 6-Chapter Scroll Camera Choreography */}
+      {/* Smooth 5-World Scroll Camera Choreography */}
       <ScrollCamera reducedMotion={reducedMotion} isMobile={isMobile} />
 
       {/* Subtle Aether Stardust */}
       {!reducedMotion && <AetherDust />}
+
+      {/* 5 Distinct 3D World Spatial Environments */}
+      <WorldsManager />
 
       {/* Master 3D Aether Temple Engine Sculpture (Dominant Foreground Hero) */}
       <PresentationControls
@@ -416,6 +455,7 @@ export const ImmersiveCanvas: React.FC<ImmersiveCanvasProps> = ({
           toneMapping: THREE.ACESFilmicToneMapping,
           toneMappingExposure: 1.35,
           powerPreference: 'high-performance',
+          preserveDrawingBuffer: true,
         }}
         shadows
         onCreated={({ gl, scene }) => {

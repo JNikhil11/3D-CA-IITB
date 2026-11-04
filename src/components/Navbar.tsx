@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { TECHFEST_CONFIG } from '../content/techfest';
+import { subscribeScroll, WORLDS } from '../motion/scrollState';
 import styles from './Navbar.module.css';
 
 interface NavItem {
@@ -18,6 +19,15 @@ const NAV_ITEMS: NavItem[] = [
 export const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
+  const [activeWorldIdx, setActiveWorldIdx] = useState<number>(0);
+
+  useEffect(() => {
+    return subscribeScroll((state) => {
+      setActiveWorldIdx(state.activeWorldIndex);
+    });
+  }, []);
+
+  const activeWorld = WORLDS[activeWorldIdx] || WORLDS[0];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -61,6 +71,14 @@ export const Navbar: React.FC = () => {
             <span className={styles.brandSub}>IIT BOMBAY · 2026</span>
           </div>
         </a>
+
+        {/* Live Active World Pill Tracker */}
+        <div className={styles.worldPill} aria-live="polite">
+          <span className={styles.pulseDot} aria-hidden="true" />
+          <span>
+            World {activeWorld.number}: {activeWorld.title}
+          </span>
+        </div>
 
         {/* Desktop Navigation */}
         <nav className={styles.desktopNav} aria-label="Main Navigation">

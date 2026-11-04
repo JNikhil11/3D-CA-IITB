@@ -222,3 +222,137 @@ export const FESTIVAL_ATMOSPHERE: AtmosphereItem[] = [
     highlight: 'December 16–18, 2026 | Indian Institute of Technology Bombay.',
   },
 ];
+
+
+export interface WorldDataItem {
+  id: string;
+  number: string;
+  title: string;
+  subtitle: string;
+  badge: string;
+  tagline: string;
+  leadParagraph: string;
+  telemetry: {
+    coordinates: string;
+    altitude: string;
+    sector: string;
+    stardate: string;
+  };
+  keyFeatures: { label: string; detail: string }[];
+  primaryCta: { label: string; url: string; isExternal?: boolean };
+  secondaryCta?: { label: string; url: string; isExternal?: boolean };
+}
+
+export const WORLD_DATA: Record<string, WorldDataItem> = {
+  'observatory': {
+    id: 'observatory',
+    number: '01',
+    title: 'The Grand Observatory',
+    subtitle: 'Celestial Vault & Astrolabe Rotunda',
+    badge: 'WORLD 01 // ROTUNDA OBSERVATORIUM',
+    tagline: 'Where classical astronomical geometry converges with computational mastery',
+    leadParagraph: 'Beneath twelve classical fluted columns and an open celestial star-dome, the monumental Living Atlas charts the intellectual constellations of Techfest 30. An illuminated obsidian chart floor mirrors ancient navigators and futuristic orbital mechanics.',
+    telemetry: {
+      coordinates: '19°08′00″N 72°54′50″E',
+      altitude: '124m MSL',
+      sector: 'Powai Celestial Vault',
+      stardate: 'Dec 16–18, 2026',
+    },
+    keyFeatures: [
+      { label: 'Architectural Rotunda', detail: '12 Corinthian fluted columns with vaulted light cones' },
+      { label: 'Celestial Star-Dome', detail: 'Hemispherical glass vault projecting real-time constellations' },
+      { label: 'Obsidian Chart Floor', detail: 'Reflective stone floor etched with orbital navigation diagrams' },
+    ],
+    primaryCta: { label: 'Explore the Atlas', url: '#explore' },
+    secondaryCta: { label: 'Official Portal ↗', url: TECHFEST_CONFIG.urls.officialSite, isExternal: true },
+  },
+  'subterranean-engine': {
+    id: 'subterranean-engine',
+    number: '02',
+    title: 'The Subterranean Engine',
+    subtitle: 'Kinematic Machine & Control Deck',
+    badge: 'WORLD 02 // SUBTERRANEAN KINEMATICS',
+    tagline: 'The heavy industrial heartwork driving physical computation',
+    leadParagraph: 'Descend through riveted steel girders and pressurized steam conduits into the subterranean machine vault. Here, glowing thermionic vacuum tubes, calibrated brass vernier dials, and precision gear trains power Asia’s fiercest robotics confrontations.',
+    telemetry: {
+      coordinates: '19°07′58″N 72°54′45″E',
+      altitude: '-18m Vault Depth',
+      sector: 'Gymkhana Sub-Arena',
+      stardate: 'Dec 16–18, 2026',
+    },
+    keyFeatures: [
+      { label: 'International Robowars', detail: 'Asia’s premier 15kg & 60kg combat robotics arena' },
+      { label: 'Thermionic Telemetry', detail: 'Vacuum tube instrumentation and mechanical vernier feedback' },
+      { label: 'Pneumatic Systems', detail: 'High-pressure steam pipes and kinematic drive linkages' },
+    ],
+    primaryCta: { label: 'View Robowars ↗', url: TECHFEST_CONFIG.urls.competitions, isExternal: true },
+    secondaryCta: { label: 'Arena Telemetry ↗', url: TECHFEST_CONFIG.urls.competitions, isExternal: true },
+  },
+  'engineering-worlds': {
+    id: 'engineering-worlds',
+    number: '03',
+    title: 'Engineering Worlds',
+    subtitle: 'Robotics, Aerospace, Computing & Earth',
+    badge: 'WORLD 03 // FOUR QUADRANTS',
+    tagline: 'Four sovereign domains of technical discipline synthesized in space',
+    leadParagraph: 'Traverse the 4 dynamic quadrants of engineering mastery: articulated 6-axis robotic arms performing laser welding arcs, high-altitude aerodynamic orbital satellites, crystalline cognitive AI cores, and sustainable closed-loop energy leylines.',
+    telemetry: {
+      coordinates: '19°08′05″N 72°54′55″E',
+      altitude: '48m Quadrant Hub',
+      sector: 'Academic Central Concourse',
+      stardate: 'Dec 16–18, 2026',
+    },
+    keyFeatures: [
+      { label: 'Aerospace Dynamics', detail: 'Boeing National Aeromodelling Challenge & drone avionics' },
+      { label: 'Cognitive Computing', detail: 'International Coding Challenge & GenAI Systems Lab' },
+      { label: 'Sustainable Earth', detail: 'InnovateX Challenge for clean technology and energy grids' },
+      { label: 'Autonomous Systems', detail: 'Meshmerize autonomous grid maze navigation' },
+    ],
+    primaryCta: { label: 'All Competitions ↗', url: TECHFEST_CONFIG.urls.competitions, isExternal: true },
+    secondaryCta: { label: 'Hands-on Labs ↗', url: TECHFEST_CONFIG.urls.workshops, isExternal: true },
+  },
+  'festival-experience': {
+    id: 'festival-experience',
+    number: '04',
+    title: 'The Techfest Experience',
+    subtitle: 'Technoholix Lasers & Ozone Arena',
+    badge: 'WORLD 04 // FESTIVAL SPECTACLE',
+    tagline: 'Where bleeding-edge science transforms into nocturnal wonder',
+    leadParagraph: 'When dusk settles over Powai Lake, the IIT Bombay Gymkhana erupts into Technoholix: an open-air amphitheater of synchronized laser physics, pyrotechnics, and optical illusions, complemented by the interactive daytime Ozone science playground.',
+    telemetry: {
+      coordinates: '19°08′12″N 72°54′40″E',
+      altitude: '32m Amphitheater',
+      sector: 'Gymkhana Grounds',
+      stardate: 'Dec 16–18, 2026 (Nights)',
+    },
+    keyFeatures: [
+      { label: 'Technoholix Night Show', detail: 'Synchronized multi-watt laser physics and kinetic aerial acts' },
+      { label: 'Ozone Science Playground', detail: 'Full-immersion VR, tactile physics labs, and escape rooms' },
+      { label: 'International Lectures', detail: 'Convocation Hall keynotes by Nobel Laureates and pioneers' },
+    ],
+    primaryCta: { label: 'Explore Festival ↗', url: TECHFEST_CONFIG.urls.exhibitions, isExternal: true },
+    secondaryCta: { label: 'Lecture Series ↗', url: TECHFEST_CONFIG.urls.lectures, isExternal: true },
+  },
+  'final-destination': {
+    id: 'final-destination',
+    number: '05',
+    title: 'The Final Destination',
+    subtitle: 'Sky Beacon & Registration Portal',
+    badge: 'WORLD 05 // THE SUMMONS',
+    tagline: 'Your passage into Asia’s largest science and technology festival',
+    leadParagraph: 'The camera pulls back to the full cosmic panorama. The Living Atlas unleashes its central vertical sky beacon into the stars, summoning inventors, developers, and visionaries worldwide to IIT Bombay this December.',
+    telemetry: {
+      coordinates: '19°08′00″N 72°54′50″E',
+      altitude: '500m Zenith Pullback',
+      sector: 'IIT Bombay Powai Campus',
+      stardate: 'Dec 16–18, 2026',
+    },
+    keyFeatures: [
+      { label: 'Dates', detail: 'December 16–18, 2026 (Accommodation: Dec 15–19)' },
+      { label: 'Venue', detail: 'IIT Bombay, Powai, Mumbai, Maharashtra 400076' },
+      { label: 'Admission', detail: 'Free delegate entry with pre-registration' },
+    ],
+    primaryCta: { label: 'Register at techfest.org ↗', url: TECHFEST_CONFIG.urls.officialSite, isExternal: true },
+    secondaryCta: { label: 'College Ambassador ↗', url: TECHFEST_CONFIG.urls.collegeAmbassador, isExternal: true },
+  },
+};

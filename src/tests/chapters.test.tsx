@@ -14,8 +14,8 @@ import { SustainabilityChapter } from '../sections/chapters/SustainabilityChapte
 import { FinaleChapter } from '../sections/chapters/FinaleChapter';
 
 describe('Authoritative Chapter Scrollytelling Suite', () => {
-  it('defines exactly 6 continuous chapters covering [0.0, 1.0] without gaps', () => {
-    expect(CHAPTERS.length).toBe(6);
+  it('defines exactly 5 continuous worlds covering [0.0, 1.0] without gaps', () => {
+    expect(CHAPTERS.length).toBe(5);
 
     // Verify first starts at 0 and last ends at 1
     expect(CHAPTERS[0].range[0]).toBe(0.0);
@@ -27,21 +27,21 @@ describe('Authoritative Chapter Scrollytelling Suite', () => {
     }
   });
 
-  it('maps progress to the correct active chapter index', () => {
-    expect(getActiveChapterIndex(0.0)).toBe(0); // Discovery
+  it('maps progress to the correct active world index', () => {
+    expect(getActiveChapterIndex(0.0)).toBe(0); // Observatory
     expect(getActiveChapterIndex(0.1)).toBe(0);
-    expect(getActiveChapterIndex(0.2)).toBe(1); // Robotics
-    expect(getActiveChapterIndex(0.4)).toBe(2); // Aerospace
-    expect(getActiveChapterIndex(0.6)).toBe(3); // Computing
-    expect(getActiveChapterIndex(0.75)).toBe(4); // Sustainability
-    expect(getActiveChapterIndex(0.95)).toBe(5); // Finale
-    expect(getActiveChapterIndex(1.0)).toBe(5);
+    expect(getActiveChapterIndex(0.2)).toBe(1); // Subterranean Engine
+    expect(getActiveChapterIndex(0.4)).toBe(2); // Engineering Worlds
+    expect(getActiveChapterIndex(0.6)).toBe(2); // Engineering Worlds
+    expect(getActiveChapterIndex(0.75)).toBe(3); // Festival Experience
+    expect(getActiveChapterIndex(0.95)).toBe(4); // Final Destination
+    expect(getActiveChapterIndex(1.0)).toBe(4);
   });
 
   it('updates scrollState and notifies listeners on setScrollProgress', () => {
     setScrollProgress(0.55);
     expect(scrollState.progress).toBe(0.55);
-    expect(scrollState.activeChapterIndex).toBe(3);
+    expect(scrollState.activeChapterIndex).toBe(2);
   });
 
   it('renders Chapter 00 (Discovery) with headline, dates, and CTA buttons', () => {
