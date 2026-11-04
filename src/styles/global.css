@@ -11,14 +11,16 @@ html {
   font-size: 16px;
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
-  background-color: var(--color-parchment);
+  /* Dark canvas shows through — no parchment bg on html root */
+  background-color: #05070f;
   color: var(--color-ink);
   overflow-x: clip;
 }
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--color-parchment);
+  /* Transparent — 3D canvas shows through */
+  background-color: transparent;
   color: var(--color-ink);
   line-height: 1.6;
   font-weight: 400;
@@ -30,19 +32,9 @@ body {
   position: relative;
 }
 
-/* Subtle paper texture / archival stipple background */
+/* Remove parchment stipple — not suitable for dark immersive bg */
 body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  opacity: 0.035;
-  background-image: radial-gradient(var(--color-ink) 1px, transparent 1px);
-  background-size: 24px 24px;
-  z-index: 999;
+  display: none;
 }
 
 /* Heading Typography */

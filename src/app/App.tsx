@@ -1,141 +1,136 @@
-import React, { useState, useEffect, useRef } from 'react';
+/**
+ * App.tsx — Immersive Full-Bleed 3D Architecture
+ *
+ * The ImmersiveCanvas is FIXED at z:0 behind all content.
+ * Editorial chapter panels scroll over it with glassmorphic cards.
+ * No two-column grid. No right-side sticky panel. No HUD buttons.
+ */
+
+import React, { useState, useEffect } from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
-import { AstrolabeCanvas } from '../scene/AstrolabeCanvas';
-import { BeaconModal } from '../scene/components/BeaconModal';
-import { BeaconData } from '../scene/pavilion/InteractiveBeacon';
-import { HeroSection } from '../sections/HeroSection';
-import { StorySection } from '../sections/StorySection';
-import { AtlasSection } from '../sections/AtlasSection';
-import { CompetitionsSection } from '../sections/CompetitionsSection';
-import { LearningSection } from '../sections/LearningSection';
-import { AtmosphereSection } from '../sections/AtmosphereSection';
-import { FinaleSection } from '../sections/FinaleSection';
-import { DOMAINS, DomainItem } from '../content/techfest';
-import { useReducedMotion } from '../hooks/useReducedMotion';
-import { useWindowSize } from '../hooks/useWindowSize';
-import { initEditorialScrollMotion } from '../motion/scrollChoreography';
+import { ImmersiveCanvas } from '../scene/ImmersiveCanvas';
+import { HeroChapter } from '../sections/chapters/HeroChapter';
+import { EnterEngineChapter } from '../sections/chapters/EnterEngineChapter';
+import { WorldsChapter } from '../sections/chapters/WorldsChapter';
+import { FestivalChapter } from '../sections/chapters/FestivalChapter';
+import { FinaleChapter } from '../sections/chapters/FinaleChapter';
 import styles from './App.module.css';
 
 export const App: React.FC = () => {
-  const [selectedDomain, setSelectedDomain] = useState<DomainItem>(DOMAINS[0]);
-  const [selectedBeacon, setSelectedBeacon] = useState<BeaconData | null>(null);
-  const [scrollProgress, setScrollProgress] = useState<number>(0);
-  const mainRef = useRef<HTMLDivElement>(null);
-  const reducedMotion = useReducedMotion();
-  const { isDesktop } = useWindowSize();
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [showScrollHint, setShowScrollHint] = useState(true);
 
-  // Passive scroll progress tracking without scroll-jacking
+  // Passive scroll progress tracker
   useEffect(() => {
     let ticking = false;
-
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-          const current = maxScroll > 0 ? window.scrollY / maxScroll : 0;
-          setScrollProgress(Math.min(1, Math.max(0, current)));
+          const maxScroll =
+            document.documentElement.scrollHeight - window.innerHeight;
+          const prog = maxScroll > 0 ? window.scrollY / maxScroll : 0;
+          setScrollProgress(Math.min(1, Math.max(0, prog)));
+          if (window.scrollY > 80) setShowScrollHint(false);
           ticking = false;
         });
         ticking = true;
       }
     };
-
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Initialize GSAP scroll animation context
-  useEffect(() => {
-    const cleanup = initEditorialScrollMotion(mainRef.current, reducedMotion);
-    return cleanup;
-  }, [reducedMotion]);
-
-  const handleExploreClick = () => {
-    const storyElem = document.getElementById('story');
-    if (storyElem) {
-      storyElem.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  const handleRingSelect = (ringIndex: number) => {
-    const matched = DOMAINS.find((d) => d.astrolabeTargetRing === ringIndex);
-    if (matched) {
-      setSelectedDomain(matched);
-    }
-  };
-
   return (
     <div className={styles.appRoot}>
-      {/* Accessible Skip Link */}
-      <a href="#main-content" className="skip-link">
+      {/* Accessible skip link */}
+      <a href="#main-content" className={styles.skipLink}>
         Skip to main content
       </a>
 
-      {/* Persistent Global Navigation */}
+      {/* Global Navigation — above the canvas (z:50) */}
       <Navbar />
 
-      {/* Main Semantic Page Content */}
-      <main id="main-content" ref={mainRef} className={styles.mainContent}>
-        {/* Unified 5-Chapter Interactive Stage & Editorial Architecture */}
-        <div className={styles.stageJourneySection}>
-          {/* Scrollable Editorial Column (Chapters 01 - 07) */}
-          <div className={styles.editorialColumn}>
-            <HeroSection
-              onExploreClick={handleExploreClick}
-              mobile3DStage={
-                !isDesktop ? (
-                  <div className={styles.mobileCanvasStage}>
-                    <AstrolabeCanvas
-                      scrollProgress={scrollProgress}
-                      activeDomain={selectedDomain.id}
-                      activeDomainRing={selectedDomain.astrolabeTargetRing}
-                      onRingSelect={handleRingSelect}
-                      onSelectBeacon={setSelectedBeacon}
-                    />
-                  </div>
-                ) : null
-              }
+      {/* Fixed 3D Canvas — lives behind everything at z:0 */}
+      <ImmersiveCanvas scrollProgress={scrollProgress} />
+
+      {/* Scroll-driven editorial chapters — z:10, scroll over canvas */}
+      <main id="main-content" className={styles.scrollStream}>
+
+        {/* Chapter 00 — Opening: The Aether Engine */}
+        <section
+          id="hero"
+          className={`${styles.chapterPanel} ${styles.heroPanel} ${styles.leftPanel}`}
+          aria-label="Opening: The Aether Engine"
+        >
+          <div className={styles.glassCard}>
+            <HeroChapter
+              onExploreClick={() => {
+                document
+                  .getElementById('enter-engine')
+                  ?.scrollIntoView({ behavior: 'smooth' });
+              }}
             />
-
-            <StorySection />
-
-            <AtlasSection
-              selectedDomain={selectedDomain.id}
-              onSelectDomain={setSelectedDomain}
-            />
-
-            <CompetitionsSection />
-            <LearningSection />
-            <AtmosphereSection />
-            <FinaleSection />
           </div>
+        </section>
 
-          {/* Desktop Sticky 3D Stage (Right Column, 100vh Sticky for full user journey) */}
-          {isDesktop && (
-            <aside
-              className={styles.desktopStickyCanvas}
-              aria-label="3D Interactive Aether Engine Stage"
-            >
-              <AstrolabeCanvas
-                scrollProgress={scrollProgress}
-                activeDomain={selectedDomain.id}
-                activeDomainRing={selectedDomain.astrolabeTargetRing}
-                onRingSelect={handleRingSelect}
-                onSelectBeacon={setSelectedBeacon}
-              />
-            </aside>
-          )}
-        </div>
+        {/* Chapter 01 — Enter the Engine */}
+        <section
+          id="enter-engine"
+          className={`${styles.chapterPanel} ${styles.rightPanel}`}
+          aria-label="Chapter 01: Enter the Engine"
+        >
+          <div className={styles.glassCard}>
+            <EnterEngineChapter />
+          </div>
+        </section>
+
+        {/* Chapter 02 — The World of Engineering */}
+        <section
+          id="worlds"
+          className={`${styles.chapterPanel} ${styles.leftPanel}`}
+          aria-label="Chapter 02: The World of Engineering"
+        >
+          <div className={styles.glassCard}>
+            <WorldsChapter />
+          </div>
+        </section>
+
+        {/* Chapter 03 — The Techfest Experience */}
+        <section
+          id="festival"
+          className={`${styles.chapterPanel} ${styles.rightPanel}`}
+          aria-label="Chapter 03: The Techfest Experience"
+        >
+          <div className={styles.glassCard}>
+            <FestivalChapter />
+          </div>
+        </section>
+
+        {/* Final Chapter — Enter Techfest */}
+        <section
+          id="finale"
+          className={`${styles.chapterPanel} ${styles.centrePanel}`}
+          aria-label="Final Chapter: Enter Techfest"
+        >
+          <div className={`${styles.glassCard} ${styles.parchmentCard}`}>
+            <FinaleChapter />
+          </div>
+        </section>
+
+        {/* Footer transition zone — fades canvas to dark */}
+        <div className={styles.footerSpacer} />
       </main>
 
-      {/* Accessible Holographic Event Details Modal */}
-      <BeaconModal
-        beacon={selectedBeacon}
-        onClose={() => setSelectedBeacon(null)}
-      />
+      {/* Scroll indicator — fades when user starts scrolling */}
+      {showScrollHint && (
+        <div className={styles.scrollIndicator} aria-hidden="true">
+          <div className={styles.scrollIndicatorLine} />
+          <div className={styles.scrollIndicatorDot} />
+        </div>
+      )}
 
-      {/* Global Colophon & Disclaimer Footer */}
+      {/* Global footer */}
       <Footer />
     </div>
   );

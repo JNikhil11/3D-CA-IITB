@@ -1,6 +1,6 @@
 .footer {
-  background: var(--color-parchment-light);
-  border-top: 1px solid var(--color-card-border-strong);
+  background: #05070f;
+  border-top: 1px solid rgba(217, 175, 86, 0.15);
   padding: 4.5rem 0 3rem 0;
   position: relative;
   z-index: var(--z-content);

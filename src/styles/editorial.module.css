@@ -1,0 +1,322 @@
+/* ============================================================
+   GLOBAL TYPOGRAPHY & DESIGN TOKENS
+   ============================================================ */
+
+/* Chapter number badge */
+.chapterBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--color-antique-gold);
+  margin-bottom: 1rem;
+  opacity: 0.9;
+}
+
+.chapterBadge::before {
+  content: '';
+  display: block;
+  width: 1.5rem;
+  height: 1px;
+  background: var(--color-antique-gold);
+  opacity: 0.6;
+}
+
+/* Section headlines in dark glass panels */
+.headlineDark {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 300;
+  line-height: 1.08;
+  color: var(--color-antique-gold-bright);
+  margin-bottom: 0.5rem;
+}
+
+.headlineSub {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(217, 175, 86, 0.65);
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.bodyDark {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  line-height: 1.72;
+  color: rgba(251, 247, 238, 0.82);
+  margin-bottom: 1.5rem;
+}
+
+/* Headline in parchment panels */
+.headlineLight {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 300;
+  line-height: 1.08;
+  color: var(--color-ink);
+  margin-bottom: 0.5rem;
+}
+
+.bodyLight {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  line-height: 1.72;
+  color: var(--color-ink-muted);
+  margin-bottom: 1.5rem;
+}
+
+/* Divider rule */
+.goldRule {
+  width: 3rem;
+  height: 1px;
+  background: var(--color-antique-gold);
+  opacity: 0.5;
+  margin: 1.25rem 0;
+}
+
+/* CTA Buttons */
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  background: var(--color-vermilion);
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: none;
+  border-radius: 1px;
+  cursor: pointer;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.btnPrimary:hover,
+.btnPrimary:focus-visible {
+  background: var(--color-vermilion-hover);
+  transform: translateY(-1px);
+  outline: 2px solid var(--color-vermilion);
+  outline-offset: 3px;
+}
+
+.btnSecondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  color: var(--color-antique-gold-bright);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid rgba(217, 175, 86, 0.4);
+  border-radius: 1px;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.btnSecondary:hover,
+.btnSecondary:focus-visible {
+  border-color: var(--color-antique-gold);
+  color: var(--color-antique-gold);
+  outline: 2px solid var(--color-antique-gold);
+  outline-offset: 3px;
+}
+
+/* Button row */
+.btnRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+/* Domain grid for chapter 02 */
+.domainGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.domainPill {
+  padding: 0.65rem 0.9rem;
+  background: rgba(217, 175, 86, 0.08);
+  border: 1px solid rgba(217, 175, 86, 0.18);
+  border-radius: 1px;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: rgba(251, 247, 238, 0.8);
+  line-height: 1.4;
+}
+
+.domainPill strong {
+  display: block;
+  color: var(--color-antique-gold-bright);
+  font-weight: 600;
+  margin-bottom: 0.15rem;
+}
+
+/* Competition list */
+.compList {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.compList li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: rgba(251, 247, 238, 0.8);
+}
+
+.compList li::before {
+  content: '◆';
+  color: var(--color-antique-gold);
+  font-size: 0.45rem;
+  margin-top: 0.4rem;
+  flex-shrink: 0;
+}
+
+/* Atmosphere items */
+.atmosphereList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0.75rem 0;
+}
+
+.atmosphereItem {
+  padding: 0.9rem;
+  background: rgba(217, 175, 86, 0.05);
+  border-left: 2px solid rgba(217, 175, 86, 0.3);
+}
+
+.atmosphereItemTitle {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 400;
+  color: var(--color-antique-gold-bright);
+  margin-bottom: 0.25rem;
+}
+
+.atmosphereItemDesc {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: rgba(251, 247, 238, 0.7);
+}
+
+/* Festival dates badge */
+.datesBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1rem;
+  background: rgba(217, 175, 86, 0.1);
+  border: 1px solid rgba(217, 175, 86, 0.3);
+  border-radius: 1px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  color: var(--color-antique-gold-bright);
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+
+/* Meta coordinates */
+.metaCoords {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: rgba(217, 175, 86, 0.45);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+/* Scroll indicator */
+.scrollIndicator {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  pointer-events: none;
+  z-index: 15;
+  animation: scrollFade 1.2s ease-in-out infinite;
+}
+
+@keyframes scrollFade {
+  0%, 100% { opacity: 0.4; transform: translateX(-50%) translateY(0); }
+  50% { opacity: 0.9; transform: translateX(-50%) translateY(4px); }
+}
+
+.scrollIndicatorLine {
+  width: 1px;
+  height: 2.5rem;
+  background: linear-gradient(to bottom, rgba(217, 175, 86, 0.6), transparent);
+}
+
+.scrollIndicatorDot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-antique-gold);
+  opacity: 0.6;
+}
+
+/* Calibration badge (kept from original) */
+.calibBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid rgba(217, 175, 86, 0.25);
+  border-radius: 1px;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: rgba(217, 175, 86, 0.65);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+/* Edition pill */
+.editionPill {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  background: rgba(214, 93, 64, 0.15);
+  border: 1px solid rgba(214, 93, 64, 0.3);
+  border-radius: 1px;
+  font-family: var(--font-sans);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: #E0806A;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}

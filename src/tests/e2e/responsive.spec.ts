@@ -25,40 +25,20 @@ test.describe('Responsive & Layout Verification Suite', () => {
       await expect(hero).toBeVisible();
 
       // Check no horizontal overflow
-      const overflowInfo = await page.evaluate(() => {
-        const diff = document.documentElement.scrollWidth - window.innerWidth;
-        if (diff > 1) {
-          const culprits = Array.from(document.querySelectorAll('#main-content *'))
-            .filter((el) => {
-              const rect = el.getBoundingClientRect();
-              return rect.right > window.innerWidth || el.scrollWidth > window.innerWidth;
-            })
-            .map((el) => ({
-              tag: el.tagName,
-              cls: el.className,
-              id: el.id,
-              text: el.textContent?.slice(0, 30),
-              scrollWidth: el.scrollWidth,
-              right: el.getBoundingClientRect().right,
-            }));
-          return { diff, culprits };
-        }
-        return { diff, culprits: [] };
+      const overflow = await page.evaluate(() => {
+        return document.documentElement.scrollWidth - window.innerWidth;
       });
-      if (overflowInfo.diff > 1) {
-        console.log(`[OVERFLOW AT ${bp.name}]`, JSON.stringify(overflowInfo.culprits.slice(0, 5), null, 2));
-      }
-      expect(overflowInfo.diff).toBeLessThanOrEqual(1); // Allow subpixel rounding
+      expect(overflow).toBeLessThanOrEqual(1);
 
-      // Verify all 7 chapters are present in the DOM
-      const chapters = ['hero', 'story', 'atlas', 'competitions', 'learning', 'atmosphere', 'finale'];
+      // Verify narrative chapters in DOM
+      const chapters = ['hero', 'enter-engine', 'worlds', 'festival', 'finale'];
       for (const id of chapters) {
         const section = page.locator(`#${id}`);
         await expect(section).toBeAttached();
       }
 
       // Check primary CTA in Hero
-      const cta = page.getByRole('button', { name: /Explore The Atlas/i });
+      const cta = page.getByRole('button', { name: /Enter the Atlas/i });
       await expect(cta).toBeVisible();
 
       // Test mobile menu interaction on mobile viewports (<900px)
@@ -75,7 +55,7 @@ test.describe('Responsive & Layout Verification Suite', () => {
         await expect(menuToggle).toHaveAttribute('aria-expanded', 'false');
       }
 
-      // Capture screenshot evidence for each verified viewport
+      // Capture screenshot
       await page.screenshot({
         path: `test-results/screenshot-${bp.name}.png`,
         fullPage: false,
@@ -83,50 +63,48 @@ test.describe('Responsive & Layout Verification Suite', () => {
     });
   }
 
-  test('interactive domain tabs align astrolabe quadrant and update details', async ({ page }) => {
-    await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto('/');
+  test('verifies isolated 3D prototype route loads with 3D canvas', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/prototype');
+    await page.waitForTimeout(3000);
 
-    const aerospaceTab = page.locator('#tab-aerospace');
-    await aerospaceTab.scrollIntoViewIfNeeded();
-    await expect(aerospaceTab).toBeVisible();
-    await aerospaceTab.click({ force: true });
+    const canvas = page.locator('canvas');
+    await expect(canvas).toBeVisible();
 
-    await expect(aerospaceTab).toHaveAttribute('aria-selected', 'true');
-    const panel = page.locator('#panel-aerospace');
-    await expect(panel).toBeVisible();
-    await expect(panel).toContainText('ORBITAL PLANE 2');
+    await expect(page.getByText('The Aether Engine')).toBeVisible();
+    await page.screenshot({ path: 'test-results/screenshot-prototype-e2e.png' });
   });
 
-  test('captures multi-chapter 3D camera and world transitions across scroll journey', async ({
+  test('captures multi-chapter 3D camera transitions across scroll journey', async ({
     page,
   }) => {
     test.setTimeout(90000);
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/');
+    await page.waitForTimeout(3000);
 
-    // 1. Chapter 01: Story (Dive into gears)
-    const story = page.locator('#story');
-    await story.scrollIntoViewIfNeeded();
-    await page.waitForTimeout(600);
-    await page.screenshot({ path: 'test-results/screenshot-chapter01-story.png' });
+    // 1. Chapter 01: Enter the Engine
+    const ch1 = page.locator('#enter-engine');
+    await ch1.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(800);
+    await page.screenshot({ path: 'test-results/screenshot-ch01-engine.png' });
 
-    // 2. Chapter 02: Atlas (Engineering Worlds)
-    const atlas = page.locator('#atlas');
-    await atlas.scrollIntoViewIfNeeded();
-    await page.waitForTimeout(600);
-    await page.screenshot({ path: 'test-results/screenshot-chapter02-atlas.png' });
+    // 2. Chapter 02: World of Engineering
+    const ch2 = page.locator('#worlds');
+    await ch2.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(800);
+    await page.screenshot({ path: 'test-results/screenshot-ch02-worlds.png' });
 
-    // 3. Chapter 03: Competitions (Festival Pavilion)
-    const comps = page.locator('#competitions');
-    await comps.scrollIntoViewIfNeeded();
-    await page.waitForTimeout(600);
-    await page.screenshot({ path: 'test-results/screenshot-chapter03-pavilion.png' });
+    // 3. Chapter 03: The Techfest Experience
+    const ch3 = page.locator('#festival');
+    await ch3.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(800);
+    await page.screenshot({ path: 'test-results/screenshot-ch03-festival.png' });
 
-    // 4. Chapter 07: Finale (Pullback to Aether Engine)
+    // 4. Finale: Enter Techfest 30
     const finale = page.locator('#finale');
     await finale.scrollIntoViewIfNeeded();
-    await page.waitForTimeout(600);
-    await page.screenshot({ path: 'test-results/screenshot-chapter07-finale.png' });
+    await page.waitForTimeout(800);
+    await page.screenshot({ path: 'test-results/screenshot-finale.png' });
   });
 });

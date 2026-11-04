@@ -1,0 +1,65 @@
+.prototypeContainer {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: radial-gradient(circle at 60% 40%, #111827 0%, #080D1A 60%, #03060C 100%);
+  display: flex;
+  flex-direction: column;
+}
+
+.canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+/* Subtle, unobtrusive top brand mark */
+.headerOverlay {
+  position: absolute;
+  top: 1.75rem;
+  left: 2rem;
+  z-index: 10;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.brandTitle {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: #F7D57F;
+  text-transform: uppercase;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+}
+
+.brandSub {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  color: rgba(217, 175, 86, 0.75);
+  text-transform: uppercase;
+}
+
+/* Discreet subtle prompt at bottom */
+.interactionPrompt {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  pointer-events: none;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(217, 175, 86, 0.7);
+  background: rgba(5, 7, 15, 0.6);
+  padding: 0.5rem 1.25rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(217, 175, 86, 0.25);
+  backdrop-filter: blur(8px);
+}

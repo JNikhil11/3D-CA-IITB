@@ -8,12 +8,11 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: 'Prologue', href: '#hero' },
-  { label: 'The Revival', href: '#story' },
-  { label: 'The Atlas', href: '#atlas' },
-  { label: 'Competitions', href: '#competitions' },
-  { label: 'Discovery', href: '#learning' },
-  { label: 'Atmosphere', href: '#atmosphere' },
+  { label: 'Opening', href: '#hero' },
+  { label: 'The Engine', href: '#enter-engine' },
+  { label: 'Engineering', href: '#worlds' },
+  { label: 'Festival', href: '#festival' },
+  { label: 'Enter Techfest', href: '#finale' },
 ];
 
 export const Navbar: React.FC = () => {
