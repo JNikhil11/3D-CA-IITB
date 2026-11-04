@@ -2,7 +2,7 @@
  * Prototype — Phase 2 Isolated Route
  *
  * Dedicated isolated 3D environment presenting the master
- * Astronomical Astrolabe sculpture. Occupies >70% of the viewport with
+ * Aether Temple Engine sculpture. Occupies >70% of the viewport with
  * rich PBR materials, contact shadows, studio reflections, and
  * full 360° pointer/touch interactive presentation.
  */
@@ -11,12 +11,10 @@ import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import {
   Environment,
-  ContactShadows,
   PresentationControls,
-  Float,
 } from '@react-three/drei';
 import * as THREE from 'three';
-import { AstronomicalAstrolabe } from '../scene/sculpture/AstronomicalAstrolabe';
+import { AetherTempleEngine } from '../scene/sculpture/AetherTempleEngine';
 import styles from './Prototype.module.css';
 
 export const Prototype: React.FC = () => {
@@ -31,72 +29,60 @@ export const Prototype: React.FC = () => {
       {/* 3D Canvas Stage */}
       <Canvas
         className={styles.canvas}
-        camera={{ position: [0, 0.25, 8.5], fov: 42 }}
+        camera={{ position: [0, 1.25, 9.2], fov: 42 }}
         shadows
         gl={{
           antialias: true,
           alpha: false,
           toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 1.25,
+          toneMappingExposure: 1.35,
           powerPreference: 'high-performance',
         }}
         onCreated={({ gl, scene }) => {
-          gl.setClearColor(new THREE.Color('#060913'));
-          scene.fog = new THREE.FogExp2('#060913', 0.025);
+          gl.setClearColor(new THREE.Color('#03050A'));
+          scene.fog = new THREE.FogExp2('#03050A', 0.032);
         }}
       >
         <Suspense fallback={null}>
-          {/* Studio HDRI Environment for realistic metallic brass/bronze reflections */}
+          {/* Studio HDRI Environment for realistic metallic brass/gunmetal reflections */}
           <Environment files="/hdri/studio_small.hdr" background={false} />
 
-          {/* Ambient light for shadow fill */}
-          <ambientLight intensity={0.35} color="#D8C8A8" />
+          {/* Deep ambient fill for moody shadows */}
+          <ambientLight intensity={0.4} color="#182236" />
 
-          {/* Primary key sunlight (warm gold from top-left) */}
+          {/* Key light from top-left */}
           <directionalLight
-            position={[-5, 8, 4]}
+            position={[-5, 10, 7]}
             intensity={2.8}
-            color="#FFF4D6"
+            color="#FFF6E4"
             castShadow
             shadow-mapSize={[2048, 2048]}
             shadow-bias={-0.0002}
           />
 
-          {/* Secondary warm brass fill light */}
+          {/* Warm brass edge fill */}
           <directionalLight
-            position={[5, 4, 3]}
+            position={[7, 4, 5]}
             intensity={1.6}
             color="#E8C372"
           />
 
-          {/* Deep ultramarine celestial rim light from behind */}
+          {/* Cool ultramarine rim light from behind */}
           <directionalLight
-            position={[0, -2, -6]}
-            intensity={1.8}
-            color="#344FC1"
-          />
-
-          {/* Ground reflection & contact shadow plane */}
-          <ContactShadows
-            position={[0, -2.85, 0]}
-            opacity={0.7}
-            scale={14}
-            blur={2.0}
-            far={5}
-            color="#04060C"
+            position={[0, 7, -9]}
+            intensity={2.2}
+            color="#3252AC"
           />
 
           {/* Interactive presentation wrapper with pointer/touch support */}
           <PresentationControls
             global
             snap={false}
-            rotation={[0.1, 0.35, 0]}
-            polar={[-Math.PI / 4, Math.PI / 4]}
+            rotation={[0.1, 0.22, 0]}
+            polar={[-Math.PI / 6, Math.PI / 6]}
             azimuth={[-Math.PI, Math.PI]}
           >
-            <Float speed={0.8} rotationIntensity={0.08} floatIntensity={0.15}>
-              <AstronomicalAstrolabe />
-            </Float>
+            <AetherTempleEngine position={[0, -0.2, 0]} />
           </PresentationControls>
         </Suspense>
       </Canvas>

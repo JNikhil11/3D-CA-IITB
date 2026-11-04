@@ -66,17 +66,20 @@
     inset 0 0 40px rgba(217, 175, 86, 0.04);
 }
 
-/* On mobile: tighter, positioned at bottom so 3D fills top */
+/* On mobile: tighter, positioned at bottom so 3D fills top half of screen */
 @media (max-width: 639px) {
-  .chapterPanel {
+  .chapterPanel,
+  .chapterPanel.heroPanel {
     align-items: flex-end;
-    padding-bottom: 2rem;
+    padding-top: 40vh;
+    padding-bottom: 1.5rem;
   }
 
   .glassCard {
-    background: rgba(5, 7, 15, 0.82);
+    background: rgba(5, 7, 15, 0.75);
     padding: 1.25rem;
     max-width: 100%;
+    margin-bottom: 1rem;
   }
 }
 

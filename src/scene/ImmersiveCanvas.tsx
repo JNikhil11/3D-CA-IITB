@@ -1,9 +1,11 @@
 /**
  * ImmersiveCanvas — Full-viewport fixed WebGL stage.
  *
- * Houses the master Astronomical Astrolabe sculpture,
- * dynamic cinematic studio lighting, HDRI reflections,
- * contact shadows, and scroll-driven camera choreography.
+ * Houses:
+ * 1. The master Aether Temple Engine sculpture
+ * 2. Specialized 3D Chapter Environments (Robotics, Aerospace, Computing, Festival)
+ * 3. Cinematic studio lighting, HDRI reflections, and volumetric ground mist
+ * 4. Continuous scroll-driven camera choreography linking all 5 chapters
  */
 
 import React, {
@@ -17,14 +19,15 @@ import React, {
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import {
   Environment,
-  ContactShadows,
-  Float,
   PresentationControls,
-  Preload,
   useProgress,
 } from '@react-three/drei';
 import * as THREE from 'three';
-import { AstronomicalAstrolabe } from './sculpture/AstronomicalAstrolabe';
+import { AetherTempleEngine } from './sculpture/AetherTempleEngine';
+import { RoboticsEnvironment } from './chapters/RoboticsEnvironment';
+import { AerospaceEnvironment } from './chapters/AerospaceEnvironment';
+import { ComputingEnvironment } from './chapters/ComputingEnvironment';
+import { FestivalEnvironment } from './chapters/FestivalEnvironment';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { useWindowSize } from '../hooks/useWindowSize';
 import styles from './ImmersiveCanvas.module.css';
@@ -58,59 +61,83 @@ interface CameraRig {
   reducedMotion: boolean;
 }
 
+/**
+ * Continuous 5-Chapter Camera Choreography
+ */
 function ScrollCamera({ scrollProgress, reducedMotion }: CameraRig) {
   const { camera } = useThree();
-  const targetPos = useRef(new THREE.Vector3(1.4, 0.4, 7.5));
-  const targetLook = useRef(new THREE.Vector3(0, 0, 0));
+  const targetPos = useRef(new THREE.Vector3(0, 1.25, 9.2));
+  const targetLook = useRef(new THREE.Vector3(0, 0.2, 0));
 
   useFrame(() => {
     const p = scrollProgress;
 
     if (p < 0.2) {
-      // Opening: wide establishing shot offset to the right for editorial card
-      targetPos.current.set(1.4, 0.4, 7.5);
-      targetLook.current.set(0, 0, 0);
+      // Opening Hero: Wide establishing 3/4 view of the temple engine
+      const t = p / 0.2;
+      targetPos.current.set(
+        THREE.MathUtils.lerp(0, 0.5, t),
+        THREE.MathUtils.lerp(1.25, 0.9, t),
+        THREE.MathUtils.lerp(9.2, 8.0, t)
+      );
+      targetLook.current.set(0, 0.2, 0);
     } else if (p < 0.4) {
-      // Chapter 01: zoom in closer
+      // Chapter 01: Enter the Engine (Zoom macro travel inside the gimbals & core)
       const t = (p - 0.2) / 0.2;
       targetPos.current.set(
-        THREE.MathUtils.lerp(1.4, 2.0, t),
-        THREE.MathUtils.lerp(0.4, 1.0, t),
-        THREE.MathUtils.lerp(7.5, 4.2, t)
+        THREE.MathUtils.lerp(0.5, 0.0, t),
+        THREE.MathUtils.lerp(0.9, 0.4, t),
+        THREE.MathUtils.lerp(8.0, 4.4, t)
       );
-      targetLook.current.set(0, 0, 0);
-    } else if (p < 0.65) {
-      // Chapter 02: orbital sweep
-      const t = (p - 0.4) / 0.25;
-      const angle = THREE.MathUtils.lerp(0, Math.PI * 0.5, t);
+      targetLook.current.set(0, 0.4, 0);
+    } else if (p < 0.62) {
+      // Chapter 02: Robotics Forge (Camera sweeps to the West Wing industrial cell)
+      const t = (p - 0.4) / 0.22;
       targetPos.current.set(
-        Math.sin(angle) * 5.5,
-        THREE.MathUtils.lerp(1.0, 0.3, t),
-        Math.cos(angle) * 5.5
+        THREE.MathUtils.lerp(0.0, -3.2, t),
+        THREE.MathUtils.lerp(0.4, 0.8, t),
+        THREE.MathUtils.lerp(4.4, 5.2, t)
       );
-      targetLook.current.set(0, 0, 0);
-    } else if (p < 0.85) {
-      // Chapter 03: elevated lookdown
-      const t = (p - 0.65) / 0.2;
+      targetLook.current.set(
+        THREE.MathUtils.lerp(0, -4.2, t),
+        THREE.MathUtils.lerp(0.4, 0.3, t),
+        THREE.MathUtils.lerp(0, -0.8, t)
+      );
+    } else if (p < 0.82) {
+      // Chapter 03: Aerospace & Deep Space (Camera sweeps across to the orbital satellite)
+      const t = (p - 0.62) / 0.2;
       targetPos.current.set(
-        THREE.MathUtils.lerp(5.5, -1.5, t),
-        THREE.MathUtils.lerp(0.3, 3.0, t),
-        THREE.MathUtils.lerp(0, 6, t)
+        THREE.MathUtils.lerp(-3.2, 3.4, t),
+        THREE.MathUtils.lerp(0.8, 1.4, t),
+        THREE.MathUtils.lerp(5.2, 5.5, t)
       );
-      targetLook.current.set(0, 0, 0);
+      targetLook.current.set(
+        THREE.MathUtils.lerp(-4.2, 4.2, t),
+        THREE.MathUtils.lerp(0.3, 0.6, t),
+        THREE.MathUtils.lerp(-0.8, -0.6, t)
+      );
+    } else if (p < 0.92) {
+      // Chapter 04: Computing & Neural Matrix (Camera ascends to quantum vault)
+      const t = (p - 0.82) / 0.1;
+      targetPos.current.set(
+        THREE.MathUtils.lerp(3.4, 0.0, t),
+        THREE.MathUtils.lerp(1.4, 3.6, t),
+        THREE.MathUtils.lerp(5.5, 5.0, t)
+      );
+      targetLook.current.set(0, 2.8, -2.5);
     } else {
-      // Final: return to centered hero
-      const t = (p - 0.85) / 0.15;
+      // Chapter 05: Grand Festival Finale (Pull back to grand panoramic elevation with sky beacon)
+      const t = (p - 0.92) / 0.08;
       targetPos.current.set(
-        THREE.MathUtils.lerp(-1.5, 1.4, t),
-        THREE.MathUtils.lerp(3.0, 0.4, t),
-        THREE.MathUtils.lerp(6, 7.5, t)
+        0,
+        THREE.MathUtils.lerp(3.6, 1.6, t),
+        THREE.MathUtils.lerp(5.0, 10.5, t)
       );
-      targetLook.current.set(0, 0, 0);
+      targetLook.current.set(0, 1.0, 0);
     }
 
     if (!reducedMotion) {
-      camera.position.lerp(targetPos.current, 0.04);
+      camera.position.lerp(targetPos.current, 0.045);
     } else {
       camera.position.copy(targetPos.current);
     }
@@ -121,15 +148,15 @@ function ScrollCamera({ scrollProgress, reducedMotion }: CameraRig) {
 }
 
 function AetherDust() {
-  const count = 300;
+  const count = 350;
   const geo = useRef<THREE.BufferGeometry>(null);
 
   const positions = useMemo(() => {
     const arr = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      arr[i * 3] = (Math.random() - 0.5) * 20;
-      arr[i * 3 + 1] = (Math.random() - 0.5) * 14;
-      arr[i * 3 + 2] = (Math.random() - 0.5) * 16 - 2;
+      arr[i * 3] = (Math.random() - 0.5) * 24;
+      arr[i * 3 + 1] = (Math.random() - 0.5) * 16;
+      arr[i * 3 + 2] = (Math.random() - 0.5) * 20 - 2;
     }
     return arr;
   }, []);
@@ -138,7 +165,7 @@ function AetherDust() {
     if (!geo.current) return;
     const pos = geo.current.attributes.position as THREE.BufferAttribute;
     for (let i = 0; i < count; i++) {
-      pos.setY(i, ((pos.getY(i) + delta * 0.02 + 7) % 14) - 7);
+      pos.setY(i, ((pos.getY(i) + delta * 0.025 + 8) % 16) - 8);
     }
     pos.needsUpdate = true;
   });
@@ -149,10 +176,10 @@ function AetherDust() {
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
       <pointsMaterial
-        size={0.03}
-        color="#D9AF56"
+        size={0.035}
+        color="#E5C158"
         transparent
-        opacity={0.35}
+        opacity={0.38}
         sizeAttenuation
         depthWrite={false}
       />
@@ -167,76 +194,98 @@ function SceneContent({
   scrollProgress: number;
   reducedMotion: boolean;
 }) {
+  // Compute smooth chapter environment visibility weights
+  const p = scrollProgress;
+
+  // Robotics: fades in around 0.35, peaks 0.45-0.58, fades out by 0.65
+  const roboticsOpacity =
+    p >= 0.32 && p <= 0.65
+      ? p < 0.42
+        ? (p - 0.32) / 0.1
+        : p > 0.58
+        ? (0.65 - p) / 0.07
+        : 1.0
+      : 0.0;
+
+  // Aerospace: fades in around 0.55, peaks 0.65-0.78, fades out by 0.84
+  const aerospaceOpacity =
+    p >= 0.55 && p <= 0.84
+      ? p < 0.65
+        ? (p - 0.55) / 0.1
+        : p > 0.78
+        ? (0.84 - p) / 0.06
+        : 1.0
+      : 0.0;
+
+  // Computing: fades in around 0.74, peaks 0.82-0.90, fades out by 0.94
+  const computingOpacity =
+    p >= 0.74 && p <= 0.94
+      ? p < 0.82
+        ? (p - 0.74) / 0.08
+        : p > 0.9
+        ? (0.94 - p) / 0.04
+        : 1.0
+      : 0.0;
+
+  // Festival: fades in around 0.88, peaks at 1.0
+  const festivalOpacity =
+    p >= 0.88 ? THREE.MathUtils.clamp((p - 0.88) / 0.08, 0, 1) : 0.0;
+
   return (
     <>
       {/* Studio HDRI Environment for realistic metallic reflections */}
       <Environment files="/hdri/studio_small.hdr" background={false} />
 
-      {/* Ambient Fill */}
-      <ambientLight intensity={0.35} color="#D8C8A8" />
+      {/* Cinematic Studio Lighting */}
+      <ambientLight intensity={0.38} color="#151D2C" />
 
-      {/* Key Directional Sunlight (Warm golden from top-right) */}
+      {/* Warm Golden Key Light */}
       <directionalLight
-        position={[6, 10, 4]}
+        position={[-6, 10, 7]}
         intensity={2.8}
-        color="#FFF0D0"
+        color="#FFF6E4"
         castShadow
         shadow-mapSize={[2048, 2048]}
-        shadow-camera-far={30}
+        shadow-camera-far={35}
         shadow-bias={-0.0002}
       />
 
-      {/* Secondary Fill (Warm brass) */}
+      {/* Secondary Brass Fill */}
       <directionalLight
-        position={[-6, 4, 3]}
+        position={[7, 4, 5]}
         intensity={1.6}
         color="#E8C372"
       />
 
-      {/* Rim light (Deep ultramarine celestial contrast) */}
+      {/* Ultramarine Celestial Rim Light */}
       <directionalLight
-        position={[0, -3, -8]}
-        intensity={1.8}
-        color="#344FC1"
+        position={[0, 7, -9]}
+        intensity={2.2}
+        color="#3252AC"
       />
 
-      {/* Scroll camera */}
+      {/* Smooth Scroll Camera Choreography */}
       <ScrollCamera scrollProgress={scrollProgress} reducedMotion={reducedMotion} />
 
-      {/* Stardust particles */}
+      {/* Subtle Aether Stardust */}
       {!reducedMotion && <AetherDust />}
 
-      {/* Contact shadow */}
-      <ContactShadows
-        position={[0, -2.4, 0]}
-        opacity={0.65}
-        scale={12}
-        blur={2.2}
-        far={6}
-        color="#040710"
-      />
-
-      {/* Master 3D Astrolabe sculpture */}
+      {/* Master 3D Aether Temple Engine Sculpture */}
       <PresentationControls
         global
         snap={false}
-        rotation={[0.1, 0, 0]}
-        polar={[-Math.PI / 4, Math.PI / 4]}
-        azimuth={[-Math.PI / 2, Math.PI / 2]}
+        rotation={[0, 0, 0]}
+        polar={[-Math.PI / 8, Math.PI / 8]}
+        azimuth={[-Math.PI / 4, Math.PI / 4]}
       >
-        <Float
-          speed={reducedMotion ? 0 : 0.6}
-          rotationIntensity={reducedMotion ? 0 : 0.12}
-          floatIntensity={reducedMotion ? 0 : 0.25}
-        >
-          <AstronomicalAstrolabe
-            scrollProgress={scrollProgress}
-            reducedMotion={reducedMotion}
-          />
-        </Float>
+        <AetherTempleEngine position={[0, -0.2, 0]} />
       </PresentationControls>
 
-      <Preload all />
+      {/* Distinct 3D Chapter Environments */}
+      <RoboticsEnvironment active={roboticsOpacity > 0} opacity={roboticsOpacity} />
+      <AerospaceEnvironment active={aerospaceOpacity > 0} opacity={aerospaceOpacity} />
+      <ComputingEnvironment active={computingOpacity > 0} opacity={computingOpacity} />
+      <FestivalEnvironment active={festivalOpacity > 0} opacity={festivalOpacity} />
     </>
   );
 }
@@ -250,7 +299,6 @@ export const ImmersiveCanvas: React.FC<ImmersiveCanvasProps> = ({
   const [hasWebGL, setHasWebGL] = useState(true);
   const [progress, setProgress] = useState(0);
   const [interacted, setInteracted] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     try {
@@ -278,7 +326,6 @@ export const ImmersiveCanvas: React.FC<ImmersiveCanvasProps> = ({
 
   return (
     <div
-      ref={containerRef}
       className={styles.canvasWrapper}
       onPointerDown={handleInteraction}
       onTouchStart={handleInteraction}
@@ -307,18 +354,19 @@ export const ImmersiveCanvas: React.FC<ImmersiveCanvasProps> = ({
       {/* The WebGL Canvas */}
       <Canvas
         className={styles.canvas}
-        camera={{ position: [1.4, 0.4, 7.5], fov: 46, near: 0.1, far: 100 }}
+        camera={{ position: [0, 1.25, 9.2], fov: 42, near: 0.1, far: 100 }}
         dpr={isMobile ? [1, 1.5] : isTablet ? [1, 1.75] : [1, 2]}
         gl={{
           antialias: true,
           alpha: false,
           toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 1.25,
+          toneMappingExposure: 1.35,
           powerPreference: 'high-performance',
         }}
         shadows
-        onCreated={({ gl }) => {
-          gl.setClearColor(new THREE.Color('#05070f'));
+        onCreated={({ gl, scene }) => {
+          gl.setClearColor(new THREE.Color('#03050A'));
+          scene.fog = new THREE.FogExp2('#03050A', 0.032);
           gl.domElement.addEventListener('webglcontextlost', (e) => {
             e.preventDefault();
           });
