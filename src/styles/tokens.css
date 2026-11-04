@@ -1,0 +1,72 @@
+:root {
+  /* Editorial Color Palette (Techfest 30 Living Atlas Spec Page 09) */
+  --color-parchment: #F2EBDD;
+  --color-parchment-light: #FBF7EE;
+  --color-parchment-deep: #E6DFCDE0;
+  --color-ink: #272721;
+  --color-ink-muted: #55554D;
+  --color-ink-faint: #8E8E82;
+  --color-vermilion: #D65D40;
+  --color-vermilion-hover: #BF4F35;
+  --color-vermilion-subtle: #F6E2DC;
+  --color-ultramarine: #344FC1;
+  --color-ultramarine-dark: #1E2E7B;
+  --color-ultramarine-light: #506CE6;
+  --color-antique-gold: #D9AF56;
+  --color-antique-gold-bright: #E8C372;
+  --color-antique-gold-dim: #9C7A2E;
+  --color-sage: #527B65;
+  --color-sage-subtle: #DEE8E1;
+  --color-warm-white: #FBF9F3;
+  --color-card-border: rgba(39, 39, 33, 0.12);
+  --color-card-border-strong: rgba(39, 39, 33, 0.28);
+  --color-card-border-gold: rgba(217, 175, 86, 0.35);
+
+  /* Typography Stacks */
+  --font-serif: 'Cormorant Garamond', Garamond, 'Georgia', serif;
+  --font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Space Mono', 'JetBrains Mono', SFMono-Regular, Menlo, monospace;
+
+  /* Fluid Spacing Scale */
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4.5rem;
+  --space-4xl: 6rem;
+  --space-5xl: 8rem;
+
+  /* Layout Containers */
+  --container-max: 1240px;
+  --container-reading: 68ch;
+  --gutter-desktop: 2.5rem;
+  --gutter-tablet: 1.5rem;
+  --gutter-mobile: 1rem;
+
+  /* Borders & Shadows */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+  --radius-pill: 9999px;
+  --shadow-sm: 0 1px 3px rgba(39, 39, 33, 0.06);
+  --shadow-md: 0 4px 14px rgba(39, 39, 33, 0.08);
+  --shadow-lg: 0 12px 32px rgba(39, 39, 33, 0.12);
+  --shadow-gold: 0 4px 20px rgba(217, 175, 86, 0.22);
+
+  /* Transitions & Animation Easing */
+  --ease-editorial: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 180ms var(--ease-editorial);
+  --transition-normal: 320ms var(--ease-editorial);
+  --transition-slow: 600ms var(--ease-editorial);
+
+  /* Z-Index Hierarchy */
+  --z-canvas-back: 1;
+  --z-content: 10;
+  --z-canvas-interactive: 20;
+  --z-header: 50;
+  --z-modal: 100;
+  --z-tooltip: 110;
+}

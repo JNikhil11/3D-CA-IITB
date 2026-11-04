@@ -1,0 +1,87 @@
+.fallbackContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  pointer-events: none;
+}
+
+.svg {
+  width: min(85vw, 540px);
+  height: min(85vw, 540px);
+  max-height: 80vh;
+  filter: drop-shadow(0 12px 32px rgba(39, 39, 33, 0.1));
+}
+
+.animated .outerRing {
+  transform-origin: 250px 250px;
+  animation: rotateClockwise 60s linear infinite;
+}
+
+.animated .eclipticRing {
+  transform-origin: 250px 250px;
+  animation: rotateCounter 45s linear infinite;
+}
+
+.animated .equinoxRing {
+  transform-origin: 250px 250px;
+  animation: rotateClockwise 35s linear infinite;
+}
+
+.animated .innerCage {
+  transform-origin: 250px 250px;
+  animation: pulseScale 8s ease-in-out infinite;
+}
+
+.animated .alidade {
+  transform-origin: 250px 250px;
+  animation: sweepAlidade 16s ease-in-out infinite alternate;
+}
+
+.static .outerRing,
+.static .eclipticRing,
+.static .equinoxRing,
+.static .innerCage,
+.static .alidade {
+  animation: none !important;
+}
+
+@keyframes rotateClockwise {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotateCounter {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes pulseScale {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.75;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.95;
+  }
+}
+
+@keyframes sweepAlidade {
+  0% {
+    transform: rotate(-25deg);
+  }
+  100% {
+    transform: rotate(35deg);
+  }
+}
