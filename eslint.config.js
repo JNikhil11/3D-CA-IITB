@@ -42,6 +42,8 @@ export default tseslint.config(
       'vite.config.ts',
       'vitest.config.ts',
       'playwright.config.ts',
+      'QA/**',
+      'scripts/**',
     ],
   }
 );

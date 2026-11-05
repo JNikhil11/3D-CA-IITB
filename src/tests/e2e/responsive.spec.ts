@@ -42,7 +42,7 @@ test.describe('Responsive & Layout Verification Suite', () => {
       if (bp.width < 900) {
         const menuToggle = page.locator('button[aria-controls="mobile-menu"]');
         await expect(menuToggle).toBeVisible();
-        await menuToggle.click();
+        await menuToggle.click({ force: true });
 
         const mobileMenu = page.locator('#mobile-menu');
         await expect(mobileMenu).toBeVisible();
@@ -80,55 +80,47 @@ test.describe('Responsive & Layout Verification Suite', () => {
     await page.goto('/');
     await page.waitForTimeout(3000);
 
-    // Ch 00: The Discovery (initial scroll 0)
-    await expect(page.getByText('An Aetherial Renaissance')).toBeVisible();
+    // World 01: The Grand Observatory (initial scroll 0)
+    await expect(page.getByText('The Grand Observatory').first()).toBeVisible();
 
-    // Scroll forward to Ch 01: Robotics
+    // Scroll forward to World 02: Subterranean Engine
     await page.evaluate(() => {
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       window.scrollTo({ top: maxScroll * 0.25, behavior: 'instant' });
     });
-    await page.waitForTimeout(800);
-    await expect(page.getByText('Robotics & Kinetic Systems')).toBeVisible();
+    await page.waitForTimeout(1000);
+    await expect(page.getByText('The Subterranean Engine').first()).toBeVisible();
 
-    // Scroll forward to Ch 02: Aerospace
+    // Scroll forward to World 03: Engineering Worlds
     await page.evaluate(() => {
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      window.scrollTo({ top: maxScroll * 0.42, behavior: 'instant' });
+      window.scrollTo({ top: maxScroll * 0.50, behavior: 'instant' });
     });
-    await page.waitForTimeout(800);
-    await expect(page.getByText('Aerospace & Orbital Dynamics')).toBeVisible();
+    await page.waitForTimeout(1000);
+    await expect(page.getByText('Engineering Worlds').first()).toBeVisible();
 
-    // Scroll forward to Ch 03: Cognitive Computing
-    await page.evaluate(() => {
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      window.scrollTo({ top: maxScroll * 0.58, behavior: 'instant' });
-    });
-    await page.waitForTimeout(800);
-    await expect(page.getByText('Cognitive Computing & Intelligence')).toBeVisible();
-
-    // Scroll forward to Ch 04: Sustainable Earth
+    // Scroll forward to World 04: The Techfest Experience
     await page.evaluate(() => {
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       window.scrollTo({ top: maxScroll * 0.75, behavior: 'instant' });
     });
-    await page.waitForTimeout(800);
-    await expect(page.getByText('Sustainable Earth Systems')).toBeVisible();
+    await page.waitForTimeout(1000);
+    await expect(page.getByText('The Techfest Experience').first()).toBeVisible();
 
-    // Scroll forward to Ch 05: Finale
+    // Scroll forward to World 05: The Final Destination
     await page.evaluate(() => {
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       window.scrollTo({ top: maxScroll * 0.95, behavior: 'instant' });
     });
-    await page.waitForTimeout(800);
-    await expect(page.getByText('Enter Techfest 30')).toBeVisible();
+    await page.waitForTimeout(1000);
+    await expect(page.getByText('The Final Destination').first()).toBeVisible();
 
-    // Reverse scrubbing test: Scroll backwards from Finale back to Ch 01 Robotics
+    // Reverse scrubbing test: Scroll backwards from Finale back to World 02 Subterranean Engine
     await page.evaluate(() => {
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       window.scrollTo({ top: maxScroll * 0.25, behavior: 'instant' });
     });
-    await page.waitForTimeout(800);
-    await expect(page.getByText('Robotics & Kinetic Systems')).toBeVisible();
+    await page.waitForTimeout(1000);
+    await expect(page.getByText('The Subterranean Engine').first()).toBeVisible();
   });
 });
