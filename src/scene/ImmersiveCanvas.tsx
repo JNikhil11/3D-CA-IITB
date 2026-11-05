@@ -20,6 +20,8 @@ import React, {
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import {
   Environment,
+  Lightformer,
+  PerformanceMonitor,
   PresentationControls,
   useProgress,
 } from '@react-three/drei';
@@ -58,7 +60,7 @@ function AssetProgressTracker({
 
   useEffect(() => {
     if (onProgress) onProgress(progress);
-    if (!active && progress >= 100 && !loadedRef.current) {
+    if (!active && !loadedRef.current) {
       loadedRef.current = true;
       if (onLoaded) onLoaded();
     }
@@ -221,39 +223,77 @@ function FocalPointProjector() {
 
 function AetherDust() {
   const count = 350;
-  const geo = useRef<THREE.BufferGeometry>(null);
+  const matRef = useRef<THREE.ShaderMaterial>(null);
 
-  const positions = useMemo(() => {
-    const arr = new Float32Array(count * 3);
+  const [positions, speeds, offsets] = useMemo(() => {
+    const pos = new Float32Array(count * 3);
+    const spd = new Float32Array(count);
+    const off = new Float32Array(count);
     for (let i = 0; i < count; i++) {
-      arr[i * 3] = (Math.random() - 0.5) * 24;
-      arr[i * 3 + 1] = (Math.random() - 0.5) * 16;
-      arr[i * 3 + 2] = (Math.random() - 0.5) * 20 - 2;
+      pos[i * 3] = (Math.random() - 0.5) * 24;
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 16;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 20 - 2;
+      spd[i] = 0.8 + Math.random() * 0.8;
+      off[i] = Math.random() * 16.0;
     }
-    return arr;
+    return [pos, spd, off];
   }, []);
 
+  const uniforms = useMemo(
+    () => ({
+      uTime: { value: 0 },
+      uColor: { value: new THREE.Color('#E5C158') },
+      uOpacity: { value: 0.38 },
+      uSize: { value: 18.0 },
+    }),
+    []
+  );
+
   useFrame((_, delta) => {
-    if (!geo.current) return;
-    const pos = geo.current.attributes.position as THREE.BufferAttribute;
-    for (let i = 0; i < count; i++) {
-      pos.setY(i, ((pos.getY(i) + delta * 0.025 + 8) % 16) - 8);
+    if (matRef.current) {
+      matRef.current.uniforms.uTime.value += delta;
     }
-    pos.needsUpdate = true;
   });
 
   return (
     <points>
-      <bufferGeometry ref={geo}>
+      <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+        <bufferAttribute attach="attributes-aSpeed" args={[speeds, 1]} />
+        <bufferAttribute attach="attributes-aOffset" args={[offsets, 1]} />
       </bufferGeometry>
-      <pointsMaterial
-        size={0.035}
-        color="#E5C158"
+      <shaderMaterial
+        ref={matRef}
         transparent
-        opacity={0.38}
-        sizeAttenuation
         depthWrite={false}
+        uniforms={uniforms}
+        vertexShader={`
+          uniform float uTime;
+          uniform float uSize;
+          attribute float aSpeed;
+          attribute float aOffset;
+          void main() {
+            vec3 pos = position;
+            pos.y = mod(pos.y + uTime * aSpeed + aOffset + 8.0, 16.0) - 8.0;
+            vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+            if (-mvPosition.z <= 0.05) {
+              gl_PointSize = 0.0;
+            } else {
+              gl_PointSize = max(0.0, uSize * (15.0 / -mvPosition.z));
+            }
+            gl_Position = projectionMatrix * mvPosition;
+          }
+        `}
+        fragmentShader={`
+          uniform vec3 uColor;
+          uniform float uOpacity;
+          void main() {
+            float dist = length(gl_PointCoord - vec2(0.5));
+            if (dist > 0.5) discard;
+            float alpha = (1.0 - smoothstep(0.15, 0.5, dist)) * uOpacity;
+            gl_FragColor = vec4(uColor, alpha);
+          }
+        `}
       />
     </points>
   );
@@ -267,6 +307,7 @@ function WorldsManager() {
     w4: false,
     w5: false,
   });
+  const lastStatesRef = useRef(worldStates);
 
   useFrame(() => {
     const p = scrollState.progress;
@@ -276,14 +317,17 @@ function WorldsManager() {
     const w4 = p >= 0.62 && p < 0.88;
     const w5 = p >= 0.82;
 
+    const last = lastStatesRef.current;
     if (
-      w1 !== worldStates.w1 ||
-      w2 !== worldStates.w2 ||
-      w3 !== worldStates.w3 ||
-      w4 !== worldStates.w4 ||
-      w5 !== worldStates.w5
+      w1 !== last.w1 ||
+      w2 !== last.w2 ||
+      w3 !== last.w3 ||
+      w4 !== last.w4 ||
+      w5 !== last.w5
     ) {
-      setWorldStates({ w1, w2, w3, w4, w5 });
+      const next = { w1, w2, w3, w4, w5 };
+      lastStatesRef.current = next;
+      setWorldStates(next);
     }
   });
 
@@ -316,7 +360,44 @@ function SceneContent({
       <FocalPointProjector />
 
       {/* Studio HDRI Environment for realistic metallic reflections */}
-      <Environment files="/hdri/studio_small.hdr" background={false} />
+      {/* High-Performance Procedural Studio Environment Rig (Zero Network Lag) */}
+      <Environment resolution={256} background={false}>
+        {/* Warm Golden Key Lightformer */}
+        <Lightformer
+          form="rect"
+          intensity={2.8}
+          color="#FFF6E4"
+          scale={[10, 5, 1]}
+          position={[-6, 10, 7]}
+          target={[0, 0, 0]}
+        />
+        {/* Warm Brass Fill Lightformer */}
+        <Lightformer
+          form="ring"
+          intensity={1.8}
+          color="#E8C372"
+          scale={[8, 8, 1]}
+          position={[7, 4, 5]}
+          target={[0, 0, 0]}
+        />
+        {/* Ultramarine Celestial Rim Lightformer */}
+        <Lightformer
+          form="rect"
+          intensity={2.2}
+          color="#3252AC"
+          scale={[12, 4, 1]}
+          position={[0, 7, -9]}
+          target={[0, 0, 0]}
+        />
+        {/* Deep Midnight Blue Atmospheric Ambient Dome */}
+        <Lightformer
+          form="circle"
+          intensity={0.6}
+          color="#151D2C"
+          scale={[16, 16, 1]}
+          position={[0, -5, 0]}
+        />
+      </Environment>
 
       {/* Cinematic Studio Lighting */}
       <ambientLight intensity={0.42} color="#151D2C" />
@@ -327,9 +408,14 @@ function SceneContent({
         intensity={2.8}
         color="#FFF6E4"
         castShadow
-        shadow-mapSize={[2048, 2048]}
-        shadow-camera-far={35}
-        shadow-bias={-0.0002}
+        shadow-mapSize={[1024, 1024]}
+        shadow-camera-left={-7}
+        shadow-camera-right={7}
+        shadow-camera-top={7}
+        shadow-camera-bottom={-7}
+        shadow-camera-near={0.5}
+        shadow-camera-far={28}
+        shadow-bias={-0.00015}
       />
 
       {/* Secondary Brass Fill */}
@@ -374,7 +460,8 @@ export const ImmersiveCanvas: React.FC<ImmersiveCanvasProps> = ({
   onLoadProgress,
 }) => {
   const reducedMotion = useReducedMotion();
-  const { isMobile, isTablet } = useWindowSize();
+  const { isMobile } = useWindowSize();
+  const [dpr, setDpr] = useState(isMobile ? 1.0 : 1.25);
   const [hasWebGL, setHasWebGL] = useState(true);
   const [interacted, setInteracted] = useState(false);
   const [isReady, setIsReady] = useState(false);
@@ -448,14 +535,14 @@ export const ImmersiveCanvas: React.FC<ImmersiveCanvasProps> = ({
           near: 0.1,
           far: 100,
         }}
-        dpr={isMobile ? [1, 1.5] : isTablet ? [1, 1.75] : [1, 2]}
+        dpr={[1, dpr]}
         gl={{
           antialias: true,
           alpha: false,
           toneMapping: THREE.ACESFilmicToneMapping,
           toneMappingExposure: 1.35,
           powerPreference: 'high-performance',
-          preserveDrawingBuffer: true,
+          // preserveDrawingBuffer omitted for fast GPU front/back flipping
         }}
         shadows
         onCreated={({ gl, scene }) => {
@@ -466,6 +553,10 @@ export const ImmersiveCanvas: React.FC<ImmersiveCanvasProps> = ({
           });
         }}
       >
+        <PerformanceMonitor
+          onDecline={() => setDpr(1.0)}
+          onIncline={() => setDpr(1.5)}
+        />
         <Suspense fallback={null}>
           <AssetProgressTracker
             onProgress={onLoadProgress}

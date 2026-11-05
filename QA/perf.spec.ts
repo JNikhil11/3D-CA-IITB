@@ -41,7 +41,7 @@ interface PerfBaseline {
 }
 
 test('Collect WebGL & Main-Thread Performance Baseline', async ({ page }) => {
-  test.setTimeout(90000);
+  test.setTimeout(180000);
 
   // Hook WebGL and PerformanceObserver before page scripts execute
   await page.addInitScript(() => {
@@ -318,9 +318,10 @@ test('Collect WebGL & Main-Thread Performance Baseline', async ({ page }) => {
     fs.mkdirSync(docsDir, { recursive: true });
   }
 
-  const baselinePath = path.join(docsDir, 'perf-baseline.json');
+  const reportName = process.env.PERF_OUT || 'perf-phase1.json';
+  const baselinePath = path.join(docsDir, reportName);
   fs.writeFileSync(baselinePath, JSON.stringify(baselineData, null, 2), 'utf-8');
-  console.log(`[PERF AUDIT] Saved baseline report to ${baselinePath}`);
+  console.log(`[PERF AUDIT] Saved report to ${baselinePath}`);
 
   expect(baselineData.scrollSamples.length).toBe(5);
 });

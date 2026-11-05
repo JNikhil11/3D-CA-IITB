@@ -1,0 +1,399 @@
+{
+  "timestamp": "2026-11-05T16:59:37.916Z",
+  "targetUrl": "http://localhost:3000",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "bundleMetrics": {
+    "totalJsBytes": 9880780,
+    "totalCssBytes": 0,
+    "totalAssetBytes": 1314,
+    "hdrBytes": 0,
+    "resources": [
+      {
+        "name": "client",
+        "transferSize": 182835,
+        "decodedSize": 182535
+      },
+      {
+        "name": "css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&display=swap",
+        "transferSize": 1314,
+        "decodedSize": 17942
+      },
+      {
+        "name": "main.tsx",
+        "transferSize": 3945,
+        "decodedSize": 3645
+      },
+      {
+        "name": "@react-refresh",
+        "transferSize": 113432,
+        "decodedSize": 113132
+      },
+      {
+        "name": "env.mjs",
+        "transferSize": 4161,
+        "decodedSize": 3861
+      },
+      {
+        "name": "react_jsx-dev-runtime.js?v=4162766e",
+        "transferSize": 13200,
+        "decodedSize": 12900
+      },
+      {
+        "name": "react.js?v=4162766e",
+        "transferSize": 1324,
+        "decodedSize": 1024
+      },
+      {
+        "name": "react-dom_client.js?v=4162766e",
+        "transferSize": 2246,
+        "decodedSize": 1946
+      },
+      {
+        "name": "App.tsx",
+        "transferSize": 31106,
+        "decodedSize": 30806
+      },
+      {
+        "name": "Prototype.tsx",
+        "transferSize": 21369,
+        "decodedSize": 21069
+      },
+      {
+        "name": "global.css",
+        "transferSize": 7835,
+        "decodedSize": 7535
+      },
+      {
+        "name": "chunk-ADHR3G76.js?v=4162766e",
+        "transferSize": 47689,
+        "decodedSize": 47389
+      },
+      {
+        "name": "chunk-DC5AMYBS.js?v=4162766e",
+        "transferSize": 9810,
+        "decodedSize": 9510
+      },
+      {
+        "name": "chunk-ZNK36WMM.js?v=4162766e",
+        "transferSize": 1102024,
+        "decodedSize": 1101724
+      },
+      {
+        "name": "chunk-UQD76GS2.js?v=4162766e",
+        "transferSize": 17509,
+        "decodedSize": 17209
+      },
+      {
+        "name": "chunk-UFORGWNI.js?v=4162766e",
+        "transferSize": 12514,
+        "decodedSize": 12214
+      },
+      {
+        "name": "gsap.js?v=4162766e",
+        "transferSize": 171071,
+        "decodedSize": 170771
+      },
+      {
+        "name": "gsap_ScrollTrigger.js?v=4162766e",
+        "transferSize": 106891,
+        "decodedSize": 106591
+      },
+      {
+        "name": "Navbar.tsx",
+        "transferSize": 34039,
+        "decodedSize": 33739
+      },
+      {
+        "name": "Footer.tsx",
+        "transferSize": 24993,
+        "decodedSize": 24693
+      },
+      {
+        "name": "VerticalNavRail.tsx",
+        "transferSize": 10530,
+        "decodedSize": 10230
+      },
+      {
+        "name": "InitialRevealCurtain.tsx",
+        "transferSize": 20184,
+        "decodedSize": 19884
+      },
+      {
+        "name": "LeaderLine.tsx",
+        "transferSize": 15037,
+        "decodedSize": 14737
+      },
+      {
+        "name": "ImmersiveCanvas.tsx",
+        "transferSize": 70008,
+        "decodedSize": 69708
+      },
+      {
+        "name": "ObservatoryWorldFrame.tsx",
+        "transferSize": 13084,
+        "decodedSize": 12784
+      },
+      {
+        "name": "SubterraneanWorldFrame.tsx",
+        "transferSize": 13110,
+        "decodedSize": 12810
+      },
+      {
+        "name": "EngineeringWorldFrame.tsx",
+        "transferSize": 13072,
+        "decodedSize": 12772
+      },
+      {
+        "name": "FestivalWorldFrame.tsx",
+        "transferSize": 13006,
+        "decodedSize": 12706
+      },
+      {
+        "name": "FinalDestinationWorldFrame.tsx",
+        "transferSize": 13900,
+        "decodedSize": 13600
+      },
+      {
+        "name": "scrollState.ts",
+        "transferSize": 10825,
+        "decodedSize": 10525
+      },
+      {
+        "name": "App.module.css",
+        "transferSize": 5968,
+        "decodedSize": 5668
+      },
+      {
+        "name": "@react-three_fiber.js?v=4162766e",
+        "transferSize": 6099,
+        "decodedSize": 5799
+      },
+      {
+        "name": "@react-three_drei.js?v=4162766e",
+        "transferSize": 3787371,
+        "decodedSize": 3787071
+      },
+      {
+        "name": "three.js?v=4162766e",
+        "transferSize": 63384,
+        "decodedSize": 63084
+      },
+      {
+        "name": "AetherTempleEngine.tsx",
+        "transferSize": 15115,
+        "decodedSize": 14815
+      },
+      {
+        "name": "Prototype.module.css",
+        "transferSize": 2845,
+        "decodedSize": 2545
+      },
+      {
+        "name": "VerticalNavRail.module.css",
+        "transferSize": 3886,
+        "decodedSize": 3586
+      },
+      {
+        "name": "LeaderLine.module.css",
+        "transferSize": 1546,
+        "decodedSize": 1246
+      },
+      {
+        "name": "InitialRevealCurtain.module.css",
+        "transferSize": 7133,
+        "decodedSize": 6833
+      },
+      {
+        "name": "DecorativeGoldFrame.tsx",
+        "transferSize": 13477,
+        "decodedSize": 13177
+      },
+      {
+        "name": "techfest.ts",
+        "transferSize": 46681,
+        "decodedSize": 46381
+      },
+      {
+        "name": "WorldFrames.module.css",
+        "transferSize": 4831,
+        "decodedSize": 4531
+      },
+      {
+        "name": "Footer.module.css",
+        "transferSize": 5809,
+        "decodedSize": 5509
+      },
+      {
+        "name": "Navbar.module.css",
+        "transferSize": 11783,
+        "decodedSize": 11483
+      },
+      {
+        "name": "GrandObservatoryEnvironment.tsx",
+        "transferSize": 56594,
+        "decodedSize": 56294
+      },
+      {
+        "name": "SubterraneanEngineEnvironment.tsx",
+        "transferSize": 73539,
+        "decodedSize": 73239
+      },
+      {
+        "name": "EngineeringWorldsEnvironment.tsx",
+        "transferSize": 61974,
+        "decodedSize": 61674
+      },
+      {
+        "name": "FestivalExperienceEnvironment.tsx",
+        "transferSize": 38388,
+        "decodedSize": 38088
+      },
+      {
+        "name": "FinalDestinationEnvironment.tsx",
+        "transferSize": 26129,
+        "decodedSize": 25829
+      },
+      {
+        "name": "useReducedMotion.ts",
+        "transferSize": 2664,
+        "decodedSize": 2364
+      },
+      {
+        "name": "useWindowSize.ts",
+        "transferSize": 4097,
+        "decodedSize": 3797
+      },
+      {
+        "name": "ImmersiveCanvas.module.css",
+        "transferSize": 2927,
+        "decodedSize": 2627
+      },
+      {
+        "name": "chunk-I3K6SBPE.js?v=4162766e",
+        "transferSize": 502075,
+        "decodedSize": 501775
+      },
+      {
+        "name": "chunk-TC52S7IS.js?v=4162766e",
+        "transferSize": 13796,
+        "decodedSize": 13496
+      },
+      {
+        "name": "chunk-Y66O7ROQ.js?v=4162766e",
+        "transferSize": 1498383,
+        "decodedSize": 1498083
+      },
+      {
+        "name": "TempleCore.tsx",
+        "transferSize": 34533,
+        "decodedSize": 34233
+      },
+      {
+        "name": "TempleGimbals.tsx",
+        "transferSize": 70104,
+        "decodedSize": 69804
+      },
+      {
+        "name": "TemplePlanetarium.tsx",
+        "transferSize": 40916,
+        "decodedSize": 40616
+      },
+      {
+        "name": "TemplePlatform.tsx",
+        "transferSize": 56395,
+        "decodedSize": 56095
+      },
+      {
+        "name": "chunk-XY7NUWS2.js?v=4162766e",
+        "transferSize": 1292900,
+        "decodedSize": 1292600
+      },
+      {
+        "name": "DecorativeGoldFrame.module.css",
+        "transferSize": 6708,
+        "decodedSize": 6408
+      },
+      {
+        "name": "aetherTempleTextures.ts",
+        "transferSize": 21981,
+        "decodedSize": 21681
+      }
+    ]
+  },
+  "scrollSamples": [
+    {
+      "progress": 0,
+      "worldName": "World 01: Grand Observatory (Hero Establishing)",
+      "drawCallsPerFrame": 359,
+      "trianglesPerFrame": 129783,
+      "activeTextures": 14,
+      "activeBuffers": 1087,
+      "longTasksCount": 7,
+      "maxLongTaskMs": 7102,
+      "avgFrameTimeMs": 3644.3,
+      "jsHeapUsedMB": 51.02
+    },
+    {
+      "progress": 0.25,
+      "worldName": "World 02: Subterranean Engine Vault",
+      "drawCallsPerFrame": 431,
+      "trianglesPerFrame": 155740,
+      "activeTextures": 14,
+      "activeBuffers": 1111,
+      "longTasksCount": 9,
+      "maxLongTaskMs": 7102,
+      "avgFrameTimeMs": 3576.54,
+      "jsHeapUsedMB": 51.02
+    },
+    {
+      "progress": 0.5,
+      "worldName": "World 03: Engineering Quadrants",
+      "drawCallsPerFrame": 459,
+      "trianglesPerFrame": 166575,
+      "activeTextures": 14,
+      "activeBuffers": 1272,
+      "longTasksCount": 13,
+      "maxLongTaskMs": 7102,
+      "avgFrameTimeMs": 3733.19,
+      "jsHeapUsedMB": 51.02
+    },
+    {
+      "progress": 0.75,
+      "worldName": "World 04: Technoholix Arena",
+      "drawCallsPerFrame": 471,
+      "trianglesPerFrame": 169857,
+      "activeTextures": 14,
+      "activeBuffers": 1359,
+      "longTasksCount": 14,
+      "maxLongTaskMs": 7102,
+      "avgFrameTimeMs": 4397.98,
+      "jsHeapUsedMB": 51.02
+    },
+    {
+      "progress": 1,
+      "worldName": "World 05: Final Elevation Beacon",
+      "drawCallsPerFrame": 468,
+      "trianglesPerFrame": 171723,
+      "activeTextures": 14,
+      "activeBuffers": 1448,
+      "longTasksCount": 17,
+      "maxLongTaskMs": 7102,
+      "avgFrameTimeMs": 4121.05,
+      "jsHeapUsedMB": 51.02
+    }
+  ],
+  "summary": {
+    "peakDrawCalls": 471,
+    "peakTriangles": 171723,
+    "totalLongTasks": 20,
+    "maxLongTaskDurationMs": 7102,
+    "totalBufferCount": 1087,
+    "totalTextureCount": 14,
+    "hdrWireSizeMB": 0
+  },
+  "hardwareIndependentVerdict": "FAIL_BUDGET: Excessive draw calls, geometries, or assets exceed 60FPS target budget on typical GPUs"
+}
